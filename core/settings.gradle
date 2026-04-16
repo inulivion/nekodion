@@ -1,0 +1,3 @@
+rootProject.name = 'nekodion-backend'
+
+include(':api')

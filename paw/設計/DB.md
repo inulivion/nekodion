@@ -8,9 +8,9 @@
 ```
 fluffy
 ├─ src/main/resources/db/migration
-│  ├─ V0_1_0_1__xxx.sql
-│  ├─ V0_1_0_2__xxx.sql
-│  └─ V0_2_0_1__xxx.sql
+│  ├─ V1_1__xxx.sql
+│  ├─ V2_1__xxx.sql
+│  ├─ V2_2__xxx.sql
 ├─ build.gradle
 ├─ Dockerfile
 └─ settings.gradle
