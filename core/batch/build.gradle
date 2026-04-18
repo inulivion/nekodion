@@ -1,0 +1,25 @@
+plugins {
+	id 'org.springframework.boot'
+	id 'com.google.cloud.tools.jib' version '3.4.4'
+}
+
+dependencies {
+	implementation project(':domain')
+	implementation project(':external')
+	implementation project(':support')
+}
+
+jib {
+	from {
+		image = 'eclipse-temurin:25-jre-alpine'
+	}
+	to {
+		image = project.findProperty('jibToImage') ?: "nekodion-batch:${version}"
+	}
+	container {
+		mainClass = 'com.konekokonekone.nekodion.batch.NekodionBatchApplication'
+		jvmFlags = ['-XX:+UseG1GC']
+	}
+	allowInsecureRegistries = true
+}
+
