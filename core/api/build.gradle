@@ -5,6 +5,7 @@ plugins {
 
 dependencies {
 	implementation project(':domain')
+	implementation project(':external')
 	implementation project(':support')
 
 	implementation 'org.springframework.boot:spring-boot-starter-security'
