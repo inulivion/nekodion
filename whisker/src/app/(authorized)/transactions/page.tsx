@@ -1,16 +1,12 @@
-import { fetcher } from "@/util/fetcher";
+import { getTransactions } from "@/features/transaction/api";
+import { TransactionPage } from "./_components";
 
-export default async function Transactions() {
-  const res1 = await fetcher.get("/transactions");
-  console.log("res1: ", res1);
-  const res2 = await fetcher.get("/transactions/1");
-  console.log("res2: ", res2);
-  const res3 = await fetcher.get("/transactions/total-assets");
-  console.log("res3: ", res3);
+export default async function Transaction() {
+  const response = await getTransactions();
 
-  return (
-    <div>
-      子猫こねこねこねこねこねこねこねこねこねこねこねこねこねこねこねこねこねこねこねこね
-    </div>
-  );
+  if ("error" in response) {
+    throw new Error("データの取得に失敗しました");
+  }
+
+  return <TransactionPage transactions={response.body} />;
 }

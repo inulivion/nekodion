@@ -1,14 +1,20 @@
-import { fetcher } from "@/util/fetcher";
+import { getTotalAssets, getTransactions } from "@/features/transaction/api";
+import { HomePage } from "./_components";
 
 export default async function Home() {
-  const res1 = await fetcher.get("/accounts");
-  console.log("res1: ", res1);
-  const res2 = await fetcher.get("/accounts/1");
-  console.log("res2: ", res2);
+  const [transactionResponse, totalAssetsResponse] = await Promise.all([
+    getTransactions(),
+    getTotalAssets(),
+  ]);
+
+  if ("error" in transactionResponse || "error" in totalAssetsResponse) {
+    throw new Error("データの取得に失敗しました");
+  }
 
   return (
-    <div>
-      子猫こねこねこねこねこねこねこねこねこねこねこねこねこねこねこねこねこねこねこねこね
-    </div>
+    <HomePage
+      transactions={transactionResponse.body}
+      totalAssets={totalAssetsResponse.body}
+    />
   );
 }
