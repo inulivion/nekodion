@@ -1,0 +1,145 @@
+"use client";
+
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { FormField } from "@/components/common/FormField";
+import { AccountSummaryResponse } from "@/features/accounts/types";
+import { ACCOUNT_TYPE_LABELS } from "@/features/accounts/const";
+
+type FormErrors = {
+  global?: string;
+  transactionType?: string;
+  accountId?: string;
+  amount?: string;
+  transactionDate?: string;
+};
+
+type Props = {
+  formAction: (payload: FormData) => void;
+  isPending: boolean;
+  errors?: FormErrors;
+  defaultValues?: {
+    transactionType?: string;
+    accountId?: string;
+    transactionName?: string;
+    amount?: number;
+    transactionDate?: string;
+    description?: string;
+  };
+  accounts: AccountSummaryResponse[];
+  submitLabel: string;
+  pendingLabel: string;
+  onTransactionTypeChange?: (value: string) => void;
+  extraActions?: React.ReactNode;
+  formRef?: React.RefObject<HTMLFormElement | null>;
+  hiddenId?: string;
+};
+
+const today = new Date().toISOString().split("T")[0];
+
+export const TransactionForm = ({
+  formAction,
+  isPending,
+  errors,
+  defaultValues,
+  accounts,
+  submitLabel,
+  pendingLabel,
+  onTransactionTypeChange,
+  extraActions,
+  formRef,
+  hiddenId,
+}: Props) => {
+  return (
+    <form ref={formRef} action={formAction} className="space-y-5">
+      {hiddenId && <input type="hidden" name="id" value={hiddenId} />}
+      {errors?.global && (
+        <div className="bg-destructive/10 border-destructive/20 text-destructive rounded-lg border px-4 py-3 text-sm">
+          {errors.global}
+        </div>
+      )}
+
+      <FormField label="取引種別" error={errors?.transactionType}>
+        <select
+          name="transactionType"
+          defaultValue={defaultValues?.transactionType ?? ""}
+          onChange={(e) => onTransactionTypeChange?.(e.target.value)}
+          className="border-input bg-background focus:ring-ring w-full rounded-lg border px-3 py-2 text-sm transition focus:border-transparent focus:ring-2 focus:outline-none"
+        >
+          <option value="">選択してください</option>
+          <option value="INCOME">収入</option>
+          <option value="EXPENSE">支出</option>
+        </select>
+      </FormField>
+
+      <FormField label="口座" error={errors?.accountId}>
+        <select
+          name="accountId"
+          defaultValue={defaultValues?.accountId ?? ""}
+          className="border-input bg-background focus:ring-ring w-full rounded-lg border px-3 py-2 text-sm transition focus:border-transparent focus:ring-2 focus:outline-none"
+        >
+          <option value="">選択してください</option>
+          {accounts.map((group) => (
+            <optgroup
+              key={group.accountType}
+              label={
+                ACCOUNT_TYPE_LABELS[group.accountType] ?? group.accountType
+              }
+            >
+              {group.accounts.map((a) => (
+                <option key={a.accountId} value={a.accountId}>
+                  {a.accountName}
+                </option>
+              ))}
+            </optgroup>
+          ))}
+        </select>
+      </FormField>
+
+      <FormField label="取引名" optional>
+        <Input
+          type="text"
+          name="transactionName"
+          placeholder="例: ランチ代"
+          maxLength={100}
+          defaultValue={defaultValues?.transactionName ?? ""}
+        />
+      </FormField>
+
+      <FormField label="金額" error={errors?.amount}>
+        <Input
+          type="number"
+          name="amount"
+          placeholder="0"
+          min={1}
+          defaultValue={defaultValues?.amount ?? ""}
+        />
+      </FormField>
+
+      <FormField label="取引日" error={errors?.transactionDate}>
+        <Input
+          type="date"
+          name="transactionDate"
+          defaultValue={defaultValues?.transactionDate ?? today}
+        />
+      </FormField>
+
+      <FormField label="メモ" optional>
+        <Input
+          type="text"
+          name="description"
+          placeholder="例: 同僚と"
+          maxLength={255}
+          defaultValue={defaultValues?.description ?? ""}
+        />
+      </FormField>
+
+      <div className="flex flex-col gap-3 pt-1">
+        <Button type="submit" disabled={isPending} className="w-full">
+          {isPending ? pendingLabel : submitLabel}
+        </Button>
+        {extraActions}
+      </div>
+    </form>
+  );
+};
