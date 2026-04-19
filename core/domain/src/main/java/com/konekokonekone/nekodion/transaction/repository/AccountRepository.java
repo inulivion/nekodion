@@ -35,4 +35,8 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
                 AND a.userId = :userId
             """)
     Optional<Account> findByIdAndUserIdWithTransactions(Long id, String userId);
+
+    Boolean existsByUserIdAndAccountName(String userId, String accountName);
+
+    Optional<Account> findByIdAndUserId(Long id, String userId);
 }

@@ -2,6 +2,8 @@ package com.konekokonekone.nekodion.api.usecase;
 
 import com.konekokonekone.nekodion.api.mapper.TransactionDetailResponseMapper;
 import com.konekokonekone.nekodion.api.mapper.TransactionItemMapper;
+import com.konekokonekone.nekodion.api.mapper.TransactionRequestMapper;
+import com.konekokonekone.nekodion.api.request.TransactionRequest;
 import com.konekokonekone.nekodion.api.response.DailyTransactionResponse;
 import com.konekokonekone.nekodion.api.response.TotalAssetsResponse;
 import com.konekokonekone.nekodion.api.response.TransactionDetailResponse;
@@ -24,6 +26,8 @@ public class TransactionUseCase {
     private final TransactionItemMapper transactionItemMapper;
 
     private final TransactionDetailResponseMapper transactionDetailResponseMapper;
+
+    private final TransactionRequestMapper transactionRequestMapper;
 
     /**
      * ユーザーの入出金一覧取得
@@ -72,5 +76,36 @@ public class TransactionUseCase {
     public TransactionDetailResponse getTransaction(Long id, String userId) {
         var transaction = transactionService.findByIdAndUserId(id, userId);
         return transactionDetailResponseMapper.toResponse(transaction);
+    }
+
+    /**
+     * 入出金記録
+     *
+     * @param userId ユーザーID
+     * @param request 入出金記録リクエスト
+     */
+    public void createTransaction(String userId, TransactionRequest request) {
+        transactionService.createTransaction(userId, transactionRequestMapper.toDto(request));
+    }
+
+    /**
+     * 入出金更新
+     *
+     * @param id 入出金ID
+     * @param userId ユーザーID
+     * @param request 入出金更新リクエスト
+     */
+    public void updateTransaction(Long id, String userId, TransactionRequest request) {
+        transactionService.updateTransaction(id, userId, transactionRequestMapper.toDto(request));
+    }
+
+    /**
+     * 入出金削除
+     *
+     * @param id 入出金ID
+     * @param userId ユーザーID
+     */
+    public void deleteTransaction(Long id, String userId) {
+        transactionService.deleteTransaction(id, userId);
     }
 }

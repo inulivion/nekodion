@@ -1,7 +1,10 @@
 package com.konekokonekone.nekodion.transaction.service;
 
 import com.konekokonekone.nekodion.support.exception.EntityNotFoundException;
+import com.konekokonekone.nekodion.transaction.dto.TransactionRequestDto;
 import com.konekokonekone.nekodion.transaction.entity.Transaction;
+import com.konekokonekone.nekodion.transaction.enums.TransactionType;
+import com.konekokonekone.nekodion.transaction.repository.AccountRepository;
 import com.konekokonekone.nekodion.transaction.repository.TransactionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,6 +19,8 @@ import java.util.List;
 public class TransactionService {
 
     private final TransactionRepository transactionRepository;
+
+    private final AccountRepository accountRepository;
 
     /**
      * ユーザーの入出金一覧取得
@@ -49,5 +54,65 @@ public class TransactionService {
     public Transaction findByIdAndUserId(Long id, String userId) {
         return transactionRepository.findByIdAndUserId(id, userId)
                 .orElseThrow(() -> new EntityNotFoundException(String.format("入出金が見つかりません。入出金ID[%d]", id)));
+    }
+
+    /**
+     * 入出金記録
+     *
+     * @param userId ユーザーID
+     * @param dto 入出金記録リクエスト
+     */
+    public void createTransaction(String userId, TransactionRequestDto dto) {
+        var account = accountRepository.findByIdAndUserId(dto.getAccountId(), userId)
+                .orElseThrow(() -> new EntityNotFoundException(String.format("口座が見つかりません。口座ID[%d]", dto.getAccountId())));
+
+        var transaction = new Transaction();
+        transaction.setUserId(userId);
+        transaction.setAccount(account);
+        transaction.setTransactionType(TransactionType.codeOf(dto.getTransactionType()));
+        transaction.setTransactionName(dto.getTransactionName());
+        transaction.setAmount(dto.getAmount());
+        transaction.setTransactionDate(dto.getTransactionDate());
+        transaction.setDescription(dto.getDescription());
+        transaction.setIsAggregated(true);
+        transaction.setIsConfirmed(true);
+
+
+        transactionRepository.save(transaction);
+    }
+
+    /**
+     * 入出金更新
+     *
+     * @param id 入出金ID
+     * @param userId ユーザーID
+     * @param dto 入出金更新リクエスト
+     */
+    public void updateTransaction(Long id, String userId, TransactionRequestDto dto) {
+        var transaction = transactionRepository.findByIdAndUserId(id, userId)
+                .orElseThrow(() -> new EntityNotFoundException(String.format("入出金が見つかりません。入出金ID[%d]", id)));
+        var account = accountRepository.findByIdAndUserId(dto.getAccountId(), userId)
+                .orElseThrow(() -> new EntityNotFoundException(String.format("口座が見つかりません。口座ID[%d]", dto.getAccountId())));
+
+        transaction.setAccount(account);
+        transaction.setTransactionType(TransactionType.codeOf(dto.getTransactionType()));
+        transaction.setTransactionName(dto.getTransactionName());
+        transaction.setAmount(dto.getAmount());
+        transaction.setTransactionDate(dto.getTransactionDate());
+        transaction.setDescription(dto.getDescription());
+
+        transactionRepository.save(transaction);
+    }
+
+    /**
+     * 入出金削除
+     *
+     * @param id 入出金ID
+     * @param userId ユーザーID
+     */
+    public void deleteTransaction(Long id, String userId) {
+        var transaction = transactionRepository.findByIdAndUserId(id, userId)
+                .orElseThrow(() -> new EntityNotFoundException(String.format("入出金が見つかりません。入出金ID[%d]", id)));
+        transactionRepository.delete(transaction);
     }
 }
