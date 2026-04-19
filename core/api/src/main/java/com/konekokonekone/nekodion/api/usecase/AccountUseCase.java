@@ -3,6 +3,7 @@ package com.konekokonekone.nekodion.api.usecase;
 import com.konekokonekone.nekodion.api.mapper.AccountDetailResponseMapper;
 import com.konekokonekone.nekodion.api.mapper.AccountSummaryResponseMapper;
 import com.konekokonekone.nekodion.api.mapper.AccountTemplateResponseMapper;
+import com.konekokonekone.nekodion.api.request.AccountRequest;
 import com.konekokonekone.nekodion.api.response.AccountDetailResponse;
 import com.konekokonekone.nekodion.api.response.AccountTemplateResponse;
 import com.konekokonekone.nekodion.transaction.entity.Account;
@@ -83,5 +84,47 @@ public class AccountUseCase {
     public AccountDetailResponse getAccount(Long id, String userId) {
         var account = accountService.findByIdAndUserId(id, userId);
         return accountDetailResponseMapper.toResponse(account);
+    }
+
+    /**
+     * 口座作成
+     *
+     * @param userId ユーザーID
+     * @param request 口座作成リクエスト
+     */
+    public void createAccount(String userId, AccountRequest request) {
+        accountService.createAccount(
+                userId,
+                request.getAccountType(),
+                request.getAccountTemplateId(),
+                request.getAccountName()
+        );
+    }
+
+    /**
+     * 口座更新
+     *
+     * @param id 口座ID
+     * @param userId ユーザーID
+     * @param request 口座更新リクエスト
+     */
+    public void updateAccount(Long id, String userId, AccountRequest request) {
+        accountService.updateAccount(
+                id,
+                userId,
+                request.getAccountType(),
+                request.getAccountTemplateId(),
+                request.getAccountName()
+        );
+    }
+
+    /**
+     * 口座削除
+     *
+     * @param id 口座ID
+     * @param userId ユーザーID
+     */
+    public void deleteAccount(Long id, String userId) {
+        accountService.deleteAccount(id, userId);
     }
 }

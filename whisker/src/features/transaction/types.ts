@@ -15,6 +15,13 @@ export type TotalAssetsResponse = {
   totalAssets: number;
 };
 
+export type MonthlySummaryResponse = {
+  year: number;
+  month: number;
+  totalIncome: number;
+  totalExpense: number;
+};
+
 export type TransactionDetailResponse = {
   id: number;
   accountId: number;
