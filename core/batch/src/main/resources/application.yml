@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: nekodion-batch
+  jpa:
+    hibernate:
+      ddl-auto: none
+  datasource:
+    url: jdbc:mysql://localhost:3368/${DB_NAME}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+gmail:
+  credentials-path: ${GMAIL_CREDENTIALS_PATH:credentials.json}
+  encryption-key: ${GMAIL_TOKEN_ENCRYPTION_KEY}
+  state-secret: ${GMAIL_STATE_SECRET}
