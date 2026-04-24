@@ -14,7 +14,8 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
                 c
             FROM
                 Category c
-            JOIN FETCH c.categoryType
+            JOIN FETCH
+                c.categoryType
             WHERE
                 (c.userId IS NULL OR c.userId = :userId)
             ORDER BY
@@ -32,4 +33,17 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
                 AND (c.userId IS NULL OR c.userId = :userId)
             """)
     Optional<Category> findAccessibleById(Long id, String userId);
+
+    @Query("""
+            SELECT
+                c
+            FROM
+                Category c
+            JOIN FETCH
+                c.categoryType ct
+            WHERE ct.categoryTypeName = '未分類'
+                AND ct.isIncome = :isIncome
+                AND c.userId IS NULL
+            """)
+    Optional<Category> findUnclassified(boolean isIncome);
 }
