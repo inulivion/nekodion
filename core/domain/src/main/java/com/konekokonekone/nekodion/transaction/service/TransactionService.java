@@ -41,15 +41,16 @@ public class TransactionService {
     }
 
     /**
-     * 総資産を取得（CARD口座を除く収入合計 - 支出合計）
+     * 総資産を取得（CARD口座を除く初期残高合計 + 収入合計 - 支出合計）
      *
      * @param userId ユーザーID
      * @return 総資産
      */
     public BigDecimal getTotalAssets(String userId) {
+        var totalInitial = accountRepository.sumInitialAmountExcludingCard(userId);
         var totalIncome = transactionRepository.sumIncomeExcludingCard(userId);
         var totalExpense = transactionRepository.sumExpenseExcludingCard(userId);
-        return totalIncome.subtract(totalExpense);
+        return totalInitial.add(totalIncome).subtract(totalExpense);
     }
 
     /**

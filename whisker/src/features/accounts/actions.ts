@@ -20,6 +20,7 @@ export async function createAccountAction(
   const accountType = formData.get("accountType") as string;
   const accountTemplateId = formData.get("accountTemplateId") as string | null;
   const accountName = (formData.get("accountName") as string)?.trim();
+  const initialAmountRaw = formData.get("initialAmount") as string | null;
 
   const errors: CreateAccountActionState["errors"] = {};
   if (!accountType) errors.accountType = "口座種別を選択してください";
@@ -30,6 +31,10 @@ export async function createAccountAction(
     accountType,
     accountTemplateId: accountTemplateId ? Number(accountTemplateId) : null,
     accountName,
+    initialAmount:
+      initialAmountRaw !== null && initialAmountRaw !== ""
+        ? Number(initialAmountRaw)
+        : null,
   });
 
   if ("error" in result) {

@@ -15,12 +15,13 @@ public interface AccountSummaryResponseMapper {
     AccountItem toResponse(Account account);
 
     default BigDecimal getTotalAmount(Account account) {
+        var base = account.getInitialAmount() != null ? account.getInitialAmount() : BigDecimal.ZERO;
         return account.getTransactions().stream()
                 .map(t -> switch (t.getTransactionType()) {
                     case INCOME -> t.getAmount();
                     case EXPENSE -> t.getAmount().negate();
                     default -> BigDecimal.ZERO;
                 })
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+                .reduce(base, BigDecimal::add);
     }
 }

@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -50,8 +51,9 @@ public class AccountService {
      * @param accountTypeString 口座種別文字列
      * @param accountTemplateId 口座テンプレートID（任意）
      * @param accountName 口座名
+     * @param initialAmount 初期残高（任意、null は 0 扱い）
      */
-    public void createAccount(String userId, String accountTypeString, Long accountTemplateId, String accountName) {
+    public void createAccount(String userId, String accountTypeString, Long accountTemplateId, String accountName, BigDecimal initialAmount) {
         var exists = accountRepository.existsByUserIdAndAccountName(userId, accountName);
         if (exists) {
             throw new EntityExistException(String.format("既に登録済みです。口座名[%s]", accountName));
@@ -61,6 +63,7 @@ public class AccountService {
         account.setAccountType(AccountType.codeOf(accountTypeString));
         account.setAccountName(accountName);
         account.setUserId(userId);
+        account.setInitialAmount(initialAmount != null ? initialAmount : BigDecimal.ZERO);
 
         if (accountTemplateId != null) {
             var template = accountTemplateRepository.findById(accountTemplateId)

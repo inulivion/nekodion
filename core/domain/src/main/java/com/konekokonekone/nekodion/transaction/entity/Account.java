@@ -8,6 +8,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Getter
@@ -33,6 +34,9 @@ public class Account extends AbstractBaseEntity {
 
     @Column(name = "account_name")
     private String accountName;
+
+    @Column(name = "initial_amount")
+    private BigDecimal initialAmount = BigDecimal.ZERO;
 
     @PrePersist
     private void prePersist() {

@@ -97,7 +97,8 @@ public class AccountUseCase {
                 userId,
                 request.getAccountType(),
                 request.getAccountTemplateId(),
-                request.getAccountName()
+                request.getAccountName(),
+                request.getInitialAmount()
         );
     }
 

@@ -31,6 +31,7 @@ export const CreateAccountPage = ({ templates }: Props) => {
         templates={templates}
         submitLabel="追加する"
         pendingLabel="作成中..."
+        showInitialAmount
       />
     </div>
   );
