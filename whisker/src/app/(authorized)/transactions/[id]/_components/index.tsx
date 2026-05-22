@@ -45,7 +45,7 @@ export const TransactionDetailPage = ({ transaction, accounts, categories }: Pro
         errors={state.errors}
         defaultValues={{
           transactionType: transaction.transactionType,
-          accountId: String(transaction.accountId),
+          accountId: transaction.accountId != null ? String(transaction.accountId) : "",
           categoryId: String(transaction.categoryId),
           transactionName: transaction.transactionName ?? "",
           amount: transaction.amount,

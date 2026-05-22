@@ -36,7 +36,7 @@ export type UnreadCountResponse = {
 
 export type TransactionDetailResponse = {
   id: number;
-  accountId: number;
+  accountId: number | null;
   categoryId: number;
   transactionType: string;
   transactionName: string | null;

@@ -62,7 +62,6 @@ export async function createTransactionAction(
 
   const errors: CreateTransactionActionState["errors"] = {};
   if (!transactionType) errors.transactionType = "取引種別を選択してください";
-  if (!accountId) errors.accountId = "口座を選択してください";
   if (!categoryId) errors.categoryId = "カテゴリーを選択してください";
   if (!transactionName) errors.transactionName = "取引名を入力してください";
   if (!amountStr || Number(amountStr) <= 0)
@@ -72,7 +71,7 @@ export async function createTransactionAction(
 
   const result = await fetcher.post("/transactions", {
     transactionType,
-    accountId: Number(accountId),
+    accountId: accountId ? Number(accountId) : null,
     categoryId: Number(categoryId),
     transactionName,
     amount: Number(amountStr),
@@ -116,7 +115,6 @@ export async function updateTransactionAction(
 
   const errors: UpdateTransactionActionState["errors"] = {};
   if (!transactionType) errors.transactionType = "取引種別を選択してください";
-  if (!accountId) errors.accountId = "口座を選択してください";
   if (!categoryId) errors.categoryId = "カテゴリーを選択してください";
   if (!transactionName) errors.transactionName = "取引名を入力してください";
   if (!amountStr || Number(amountStr) <= 0)
@@ -126,7 +124,7 @@ export async function updateTransactionAction(
 
   const result = await fetcher.put(`/transactions/${id}`, {
     transactionType,
-    accountId: Number(accountId),
+    accountId: accountId ? Number(accountId) : null,
     categoryId: Number(categoryId),
     transactionName: transactionName,
     amount: Number(amountStr),

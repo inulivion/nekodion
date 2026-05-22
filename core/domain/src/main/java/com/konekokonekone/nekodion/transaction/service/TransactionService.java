@@ -136,8 +136,10 @@ public class TransactionService {
      * @param dto 入出金記録リクエスト
      */
     public void createTransaction(String userId, TransactionRequestDto dto) {
-        var account = accountRepository.findByIdAndUserId(dto.getAccountId(), userId)
-                .orElseThrow(() -> new EntityNotFoundException(String.format("口座が見つかりません。口座ID[%d]", dto.getAccountId())));
+        var account = dto.getAccountId() != null
+                ? accountRepository.findByIdAndUserId(dto.getAccountId(), userId)
+                        .orElseThrow(() -> new EntityNotFoundException(String.format("口座が見つかりません。口座ID[%d]", dto.getAccountId())))
+                : null;
         var category = categoryService.findAccessibleById(dto.getCategoryId(), userId);
 
         var transaction = new Transaction();
@@ -166,8 +168,10 @@ public class TransactionService {
     public void updateTransaction(Long id, String userId, TransactionRequestDto dto) {
         var transaction = transactionRepository.findByIdAndUserId(id, userId)
                 .orElseThrow(() -> new EntityNotFoundException(String.format("入出金が見つかりません。入出金ID[%d]", id)));
-        var account = accountRepository.findByIdAndUserId(dto.getAccountId(), userId)
-                .orElseThrow(() -> new EntityNotFoundException(String.format("口座が見つかりません。口座ID[%d]", dto.getAccountId())));
+        var account = dto.getAccountId() != null
+                ? accountRepository.findByIdAndUserId(dto.getAccountId(), userId)
+                        .orElseThrow(() -> new EntityNotFoundException(String.format("口座が見つかりません。口座ID[%d]", dto.getAccountId())))
+                : null;
         var newCategory = categoryService.findAccessibleById(dto.getCategoryId(), userId);
 
         var previousCategoryTypeName = transaction.getCategory().getCategoryType().getCategoryTypeName();

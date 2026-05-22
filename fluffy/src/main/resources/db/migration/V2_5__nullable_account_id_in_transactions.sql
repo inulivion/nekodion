@@ -1,0 +1,1 @@
+ALTER TABLE transactions MODIFY COLUMN account_id BIGINT NULL COMMENT '口座ID';

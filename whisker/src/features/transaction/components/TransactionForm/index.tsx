@@ -117,7 +117,7 @@ export const TransactionForm = ({
           defaultValue={defaultValues?.accountId ?? ""}
           className="border-input bg-background focus:ring-ring w-full rounded-lg border px-3 py-2 text-sm transition focus:border-transparent focus:ring-2 focus:outline-none"
         >
-          <option value="">選択してください</option>
+          <option value="">なし</option>
           {accounts.map((group) => (
             <optgroup
               key={group.accountType}
