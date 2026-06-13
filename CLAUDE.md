@@ -23,11 +23,11 @@ nekodion
 | ---------- | ---------------------------------------------------- |
 | `api`      | REST controllers, use cases, request/response models |
 | `batch`    | Scheduled batch jobs                                 |
-| `domain`   | Entities, repositories, domain services              |
+| `core`     | Entities, repositories, core services                |
 | `external` | Email parsing, CSV parsing, web scraping             |
 | `support`  | Shared utilities                                     |
 
-**Module dependency direction:** `api` / `batch` → `domain` / `external` → `support`. Never create reverse dependencies.
+**Module dependency direction:** `api` / `batch` → `core` / `external` → `support`. Never create reverse dependencies.
 
 **Running the API (IntelliJ):**
 
@@ -66,7 +66,7 @@ pnpm dev
 
 ## Key Conventions
 
-- **Cross-domain dependencies:** Domain modules must not reference each other. Use IDs only across domain boundaries.
+- **Cross-core dependencies:** core modules must not reference each other. Use IDs only across core boundaries.
 - **User authentication:** Use `@CurrentUser UserDto currentUser` in controllers. Never access `SecurityContextHolder` directly.
 - **API calls (frontend):** Always use `fetcher` from `@/util/fetcher`. Never use raw `fetch`.
 - **Server Actions:** Must have `"use server"` at the top. Return typed state objects with `errors` and optional `success`.
