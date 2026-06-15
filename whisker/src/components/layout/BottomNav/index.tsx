@@ -9,6 +9,7 @@ export const BottomNav = () => {
           <Link
             key={item.href}
             href={item.href}
+            prefetch={true}
             className="flex min-w-[56px] flex-col items-center gap-0.5 rounded-xl px-3 py-1.5 transition-colors"
           >
             <item.icon className="h-5 w-5" />

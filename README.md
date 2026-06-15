@@ -1,12 +1,12 @@
 <p align="center">
-  <img src="paw/img/app-icon.png" width="120" alt="Nekodion" />
+  <img src="scratch/img/app-icon.png" width="120" alt="Nekodion" />
 </p>
 
 <h1 align="center">Nekodion</h1>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/%23cat--core-000?style=flat" alt="#cat-core" />
-  <img src="https://img.shields.io/badge/%23konekokonekone-000?style=flat" alt="#koneko" />
+  <img src="https://img.shields.io/badge/%23cat-000?style=flat" alt="#cat" />
+  <img src="https://img.shields.io/badge/%23konekokonekone-000?style=flat" alt="#konekokonekone" />
 </p>
 
 ## 子猫こねこね
@@ -34,10 +34,10 @@
 
 ```
 nekodion
-├─ core         # バックエンド
 ├─ fluffy       # DB
-├─ paw          # docs
-├─ scratch      # スクリプト
+├─ pounce       # スクリプト
+├─ prowl        # バックエンド
+├─ scratch      # docs
 ├─ whisker      # フロントエンド
 └─ README.md
 ```
