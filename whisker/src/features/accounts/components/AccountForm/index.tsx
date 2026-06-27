@@ -69,7 +69,7 @@ export const AccountForm = ({
         <select
           name="accountType"
           defaultValue={defaultValues?.accountType ?? ""}
-          className="border-input bg-background focus:ring-ring w-full rounded-lg border px-3 py-2 text-sm transition focus:border-transparent focus:ring-2 focus:outline-none"
+          className="border-input focus:ring-ring w-full rounded-lg border px-3 py-2 text-sm transition focus:border-transparent focus:ring-2 focus:outline-none"
         >
           <option value="">選択してください</option>
           {Object.entries(ACCOUNT_TYPE_LABELS).map(([value, label]) => (
@@ -85,7 +85,7 @@ export const AccountForm = ({
           name="accountTemplateId"
           defaultValue={defaultValues?.accountTemplateId ?? ""}
           onChange={handleTemplateChange}
-          className="border-input bg-background focus:ring-ring w-full rounded-lg border px-3 py-2 text-sm transition focus:border-transparent focus:ring-2 focus:outline-none"
+          className="border-input focus:ring-ring w-full rounded-lg border px-3 py-2 text-sm transition focus:border-transparent focus:ring-2 focus:outline-none"
         >
           <option value="">選択しない</option>
           {templates.map((template) => (

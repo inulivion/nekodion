@@ -81,7 +81,7 @@ export const TransactionForm = ({
           name="transactionType"
           defaultValue={defaultValues?.transactionType ?? ""}
           onChange={(e) => setSelectedType(e.target.value)}
-          className="border-input bg-background focus:ring-ring w-full rounded-lg border px-3 py-2 text-sm transition focus:border-transparent focus:ring-2 focus:outline-none"
+          className="border-input focus:ring-ring w-full rounded-lg border px-3 py-2 text-sm transition focus:border-transparent focus:ring-2 focus:outline-none"
         >
           <option value="">選択してください</option>
           <option value="INCOME">収入</option>
@@ -94,10 +94,12 @@ export const TransactionForm = ({
           name="categoryId"
           defaultValue={defaultValues?.categoryId ?? ""}
           key={selectedType}
-          className="border-input bg-background focus:ring-ring w-full rounded-lg border px-3 py-2 text-sm transition focus:border-transparent focus:ring-2 focus:outline-none"
+          className="border-input focus:ring-ring w-full rounded-lg border px-3 py-2 text-sm transition focus:border-transparent focus:ring-2 focus:outline-none"
         >
           <option value="">
-            {selectedType ? "選択してください" : "取引種別を先に選択してください"}
+            {selectedType
+              ? "選択してください"
+              : "取引種別を先に選択してください"}
           </option>
           {visibleCategories.map((ct) => (
             <optgroup key={ct.categoryTypeId} label={ct.categoryTypeName}>
@@ -115,7 +117,7 @@ export const TransactionForm = ({
         <select
           name="accountId"
           defaultValue={defaultValues?.accountId ?? ""}
-          className="border-input bg-background focus:ring-ring w-full rounded-lg border px-3 py-2 text-sm transition focus:border-transparent focus:ring-2 focus:outline-none"
+          className="border-input focus:ring-ring w-full rounded-lg border px-3 py-2 text-sm transition focus:border-transparent focus:ring-2 focus:outline-none"
         >
           <option value="">なし</option>
           {accounts.map((group) => (
@@ -176,16 +178,17 @@ export const TransactionForm = ({
       <div className="flex items-center justify-between">
         <span className="text-sm font-medium">計算対象</span>
         <div className="flex items-center gap-2">
-          <Switch
-            checked={isAggregated}
-            onCheckedChange={setIsAggregated}
-          />
+          <Switch checked={isAggregated} onCheckedChange={setIsAggregated} />
           <span className="text-muted-foreground text-sm">
             {isAggregated ? "ON" : "OFF"}
           </span>
         </div>
       </div>
-      <input type="hidden" name="isAggregated" value={isAggregated ? "true" : "false"} />
+      <input
+        type="hidden"
+        name="isAggregated"
+        value={isAggregated ? "true" : "false"}
+      />
 
       <div className="flex flex-col gap-3 pt-1">
         <Button type="submit" disabled={isPending} className="w-full">

@@ -39,7 +39,7 @@ export const HomePage = ({
         initialHidden={initialHidden}
       />
 
-      <Card className="shadow-sm">
+      <Card className="shadow-sm ring-0">
         <CardContent className="py-3">
           <p className="text-muted-foreground mb-2 text-sm font-semibold">
             {monthlySummary.month}月の収支
@@ -73,7 +73,7 @@ export const HomePage = ({
       </Card>
 
       {expenseItems.length > 0 && (
-        <Card className="shadow-sm">
+        <Card className="shadow-sm ring-0">
           <CardContent className="py-3">
             <p className="text-muted-foreground mb-2 text-sm font-semibold">
               {monthlySummary.month}月の支出内訳
@@ -83,7 +83,7 @@ export const HomePage = ({
         </Card>
       )}
 
-      <Card className="shadow-sm">
+      <Card className="shadow-sm ring-0">
         <CardHeader className="pb-3">
           <div className="flex items-center justify-between">
             <CardTitle className="text-muted-foreground text-sm font-semibold">

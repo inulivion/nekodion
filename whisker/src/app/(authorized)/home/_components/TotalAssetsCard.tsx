@@ -22,7 +22,7 @@ export const TotalAssetsCard = ({ totalAssets, initialHidden }: Props) => {
   };
 
   return (
-    <Card className="border-0 shadow-sm">
+    <Card className="shadow-sm ring-0">
       <CardContent className="py-3">
         <div className="flex items-center justify-between">
           <p className="text-xl font-bold">総資産</p>

@@ -14,6 +14,7 @@ import { AccountForm } from "@/features/accounts/components/AccountForm";
 import { Breadcrumb } from "@/components/common/Breadcrumb";
 import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
 
 type Props = {
   account: AccountDetailResponse;
@@ -56,38 +57,42 @@ export const AccountDetailPage = ({ account, templates }: Props) => {
           </div>
         </div>
 
-        <AccountForm
-          formAction={formAction}
-          isPending={isPending}
-          errors={state.errors}
-          defaultValues={{
-            accountType: account.accountType,
-            accountTemplateId:
-              account.accountTemplateId != null
-                ? String(account.accountTemplateId)
-                : "",
-            accountName: account.accountName,
-          }}
-          templates={templates}
-          hiddenId={String(account.accountId)}
-          submitLabel="更新する"
-          pendingLabel="更新中..."
-          extraActions={
-            <Button
-              type="button"
-              variant="outline"
-              disabled={isPending}
-              onClick={async () => {
-                if (!confirm("この口座を削除しますか？")) return;
-                await deleteAccountAction(account.accountId);
+        <Card className="shadow-sm ring-0">
+          <CardContent>
+            <AccountForm
+              formAction={formAction}
+              isPending={isPending}
+              errors={state.errors}
+              defaultValues={{
+                accountType: account.accountType,
+                accountTemplateId:
+                  account.accountTemplateId != null
+                    ? String(account.accountTemplateId)
+                    : "",
+                accountName: account.accountName,
               }}
-              className="border-destructive text-destructive hover:bg-destructive/10 hover:text-destructive w-full"
-            >
-              <Trash2 className="mr-1.5 h-4 w-4" />
-              削除する
-            </Button>
-          }
-        />
+              templates={templates}
+              hiddenId={String(account.accountId)}
+              submitLabel="更新する"
+              pendingLabel="更新中..."
+              extraActions={
+                <Button
+                  type="button"
+                  variant="outline"
+                  disabled={isPending}
+                  onClick={async () => {
+                    if (!confirm("この口座を削除しますか？")) return;
+                    await deleteAccountAction(account.accountId);
+                  }}
+                  className="border-destructive text-destructive hover:bg-destructive/10 hover:text-destructive w-full"
+                >
+                  <Trash2 className="mr-1.5 h-4 w-4" />
+                  削除する
+                </Button>
+              }
+            />
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

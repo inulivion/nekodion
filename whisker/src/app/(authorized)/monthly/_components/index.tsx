@@ -148,7 +148,7 @@ export const MonthlyPage = ({ initialData }: Props) => {
       <div className={isPending ? "opacity-50" : ""}>
         <div className="space-y-4">
           {/* 収支サマリー */}
-          <Card className="shadow-sm">
+          <Card className="shadow-sm ring-0">
             <CardContent className="py-3">
               <p className="text-muted-foreground mb-2 text-sm font-semibold">
                 {month}月の収支
@@ -182,7 +182,7 @@ export const MonthlyPage = ({ initialData }: Props) => {
 
           {/* 収入カテゴリー種別テーブル */}
           {incomeItems.length > 0 && (
-            <Card className="shadow-sm">
+            <Card className="shadow-sm ring-0">
               <CardContent className="py-3">
                 <p className="text-muted-foreground mb-3 text-sm font-semibold">
                   収入の内訳
@@ -194,7 +194,7 @@ export const MonthlyPage = ({ initialData }: Props) => {
 
           {/* 支出カテゴリー種別テーブル */}
           {expenseItems.length > 0 && (
-            <Card className="shadow-sm">
+            <Card className="shadow-sm ring-0">
               <CardContent className="py-3">
                 <p className="text-muted-foreground mb-3 text-sm font-semibold">
                   支出の内訳

@@ -7,6 +7,7 @@ import {
 } from "@/features/accounts/actions";
 import { AccountTemplateResponse } from "@/features/accounts/types";
 import { AccountForm } from "@/features/accounts/components/AccountForm";
+import { Card, CardContent } from "@/components/ui/card";
 
 type Props = {
   templates: AccountTemplateResponse[];
@@ -24,15 +25,19 @@ export const CreateAccountPage = ({ templates }: Props) => {
     <div className="mx-auto max-w-lg">
       <h1 className="mb-6 text-xl font-bold tracking-tight">口座追加</h1>
 
-      <AccountForm
-        formAction={formAction}
-        isPending={isPending}
-        errors={state.errors}
-        templates={templates}
-        submitLabel="追加する"
-        pendingLabel="作成中..."
-        showInitialAmount
-      />
+      <Card className="shadow-sm ring-0">
+        <CardContent>
+          <AccountForm
+            formAction={formAction}
+            isPending={isPending}
+            errors={state.errors}
+            templates={templates}
+            submitLabel="追加する"
+            pendingLabel="作成中..."
+            showInitialAmount
+          />
+        </CardContent>
+      </Card>
     </div>
   );
 };

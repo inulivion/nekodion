@@ -13,6 +13,7 @@ import { TransactionForm } from "@/features/transaction/components/TransactionFo
 import { Breadcrumb } from "@/components/common/Breadcrumb";
 import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
 
 type Props = {
   transaction: TransactionDetailResponse;
@@ -22,7 +23,11 @@ type Props = {
 
 const initialState: UpdateTransactionActionState = {};
 
-export const TransactionDetailPage = ({ transaction, accounts, categories }: Props) => {
+export const TransactionDetailPage = ({
+  transaction,
+  accounts,
+  categories,
+}: Props) => {
   const [state, formAction, isPending] = useActionState(
     updateTransactionAction,
     initialState,
@@ -39,41 +44,48 @@ export const TransactionDetailPage = ({ transaction, accounts, categories }: Pro
 
       <h1 className="mb-6 text-xl font-bold tracking-tight">入出金編集</h1>
 
-      <TransactionForm
-        formAction={formAction}
-        isPending={isPending}
-        errors={state.errors}
-        defaultValues={{
-          transactionType: transaction.transactionType,
-          accountId: transaction.accountId != null ? String(transaction.accountId) : "",
-          categoryId: String(transaction.categoryId),
-          transactionName: transaction.transactionName ?? "",
-          amount: transaction.amount,
-          transactionDate: transaction.transactionDateTime.split("T")[0],
-          description: transaction.description ?? "",
-          isAggregated: transaction.isAggregated,
-        }}
-        accounts={accounts}
-        categories={categories}
-        hiddenId={String(transaction.id)}
-        submitLabel="更新する"
-        pendingLabel="更新中..."
-        extraActions={
-          <Button
-            type="button"
-            variant="outline"
-            disabled={isPending}
-            onClick={async () => {
-              if (!confirm("この入出金を削除しますか？")) return;
-              await deleteTransactionAction(transaction.id);
+      <Card className="shadow-sm ring-0">
+        <CardContent>
+          <TransactionForm
+            formAction={formAction}
+            isPending={isPending}
+            errors={state.errors}
+            defaultValues={{
+              transactionType: transaction.transactionType,
+              accountId:
+                transaction.accountId != null
+                  ? String(transaction.accountId)
+                  : "",
+              categoryId: String(transaction.categoryId),
+              transactionName: transaction.transactionName ?? "",
+              amount: transaction.amount,
+              transactionDate: transaction.transactionDateTime.split("T")[0],
+              description: transaction.description ?? "",
+              isAggregated: transaction.isAggregated,
             }}
-            className="border-destructive text-destructive hover:bg-destructive/10 hover:text-destructive w-full"
-          >
-            <Trash2 className="mr-1.5 h-4 w-4" />
-            削除する
-          </Button>
-        }
-      />
+            accounts={accounts}
+            categories={categories}
+            hiddenId={String(transaction.id)}
+            submitLabel="更新する"
+            pendingLabel="更新中..."
+            extraActions={
+              <Button
+                type="button"
+                variant="outline"
+                disabled={isPending}
+                onClick={async () => {
+                  if (!confirm("この入出金を削除しますか？")) return;
+                  await deleteTransactionAction(transaction.id);
+                }}
+                className="border-destructive text-destructive hover:bg-destructive/10 hover:text-destructive w-full"
+              >
+                <Trash2 className="mr-1.5 h-4 w-4" />
+                削除する
+              </Button>
+            }
+          />
+        </CardContent>
+      </Card>
     </div>
   );
 };

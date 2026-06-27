@@ -41,7 +41,10 @@ export const AccountCard = ({ accountGroup }: Props) => {
     ] ?? ACCOUNT_TYPE_COLORS.OTHER;
 
   return (
-    <Card key={accountGroup.accountType} className="overflow-hidden shadow-sm">
+    <Card
+      key={accountGroup.accountType}
+      className="overflow-hidden shadow-sm ring-0"
+    >
       <CardHeader className="pt-4 pb-2">
         <div className="flex items-center gap-2">
           <div

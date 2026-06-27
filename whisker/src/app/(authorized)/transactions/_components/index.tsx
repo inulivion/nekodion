@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { TransactionTable } from "@/features/transaction/components/TransactionTable";
 import { DailyTransactionResponse } from "@/features/transaction/types";
 import { PlusCircle } from "lucide-react";
@@ -31,7 +32,11 @@ export const TransactionPage = ({ transactions, unreadCount }: Props) => {
         </Link>
       )}
 
-      <TransactionTable transactions={transactions} />
+      <Card className="shadow-sm ring-0">
+        <CardContent>
+          <TransactionTable transactions={transactions} />
+        </CardContent>
+      </Card>
     </div>
   );
 };

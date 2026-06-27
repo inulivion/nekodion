@@ -10,6 +10,7 @@ import { CategoryTypeResponse } from "@/features/category/types";
 import { TransactionForm } from "@/features/transaction/components/TransactionForm";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { CheckCircle2 } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
 
 type Props = {
   accounts: AccountSummaryResponse[];
@@ -42,16 +43,20 @@ export const CreateTransactionPage = ({ accounts, categories }: Props) => {
         </Alert>
       )}
 
-      <TransactionForm
-        formRef={formRef}
-        formAction={formAction}
-        isPending={isPending}
-        errors={state.errors}
-        accounts={accounts}
-        categories={categories}
-        submitLabel="記録する"
-        pendingLabel="記録中..."
-      />
+      <Card className="shadow-sm ring-0">
+        <CardContent>
+          <TransactionForm
+            formRef={formRef}
+            formAction={formAction}
+            isPending={isPending}
+            errors={state.errors}
+            accounts={accounts}
+            categories={categories}
+            submitLabel="記録する"
+            pendingLabel="記録中..."
+          />
+        </CardContent>
+      </Card>
     </div>
   );
 };
