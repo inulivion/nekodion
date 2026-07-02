@@ -6,16 +6,16 @@ A personal finance management app (family budget tracker).
 
 ```
 nekodion
-├─ core      # Backend (Java / Spring Boot)
 ├─ fluffy    # Database (Flyway migrations)
-├─ paw       # Documentation (design, requirements, coding conventions)
-├─ scratch   # Scripts
+├─ pounce    # Docker Compose environments (local, prod)
+├─ prowl     # Backend (Java / Spring Boot)
+├─ scratch   # Documentation (design, requirements, coding conventions)
 └─ whisker   # Frontend (Next.js)
 ```
 
-## Backend (`core/`)
+## Backend (`prowl/`)
 
-**Stack:** Java, Spring Boot, Spring Data JPA, Lombok, Gradle multi-project
+**Stack:** Java 25, Spring Boot 4.0.5, Spring Data JPA, Lombok, Gradle multi-project
 
 **Modules:**
 
@@ -31,13 +31,20 @@ nekodion
 
 **Running the API (IntelliJ):**
 
-- Task: `api:bootRun`, Gradle project: `core`
+- Task: `api:bootRun`, Gradle project: `prowl`
 - Env vars: `DB_NAME=nekodion;DB_USERNAME=;DB_PASSWORD=;ISSUER=;AUDIENCE=`
 
 **Running batch jobs:**
 
-- Task: `batch:bootRun --args='--batch.execute=<name>'`, Gradle project: `core`
+- Task: `batch:bootRun --args='--batch.execute=<name>'`, Gradle project: `prowl`
 - Env vars: `DB_NAME=nekodion;DB_USERNAME=;DB_PASSWORD=`
+
+**Batch jobs:**
+
+| Batch        | Argument   |
+| ------------ | ---------- |
+| Hello World  | HelloWorld |
+| Gmail Import | gmail      |
 
 ## Frontend (`whisker/`)
 
@@ -64,9 +71,14 @@ pnpm dev
 - Migration files: `fluffy/src/main/resources/db/migration/`
 - Naming: `V<major>_<minor>__<description>.sql`
 
+## Local Environment (`pounce/`)
+
+- `pounce/local/` — local Docker Compose (MySQL + Flyway)
+- `pounce/prod/` — production Docker Compose
+
 ## Key Conventions
 
-- **Cross-core dependencies:** core modules must not reference each other. Use IDs only across core boundaries.
+- **Cross-module dependencies:** core modules must not reference each other. Use IDs only across module boundaries.
 - **User authentication:** Use `@CurrentUser UserDto currentUser` in controllers. Never access `SecurityContextHolder` directly.
 - **API calls (frontend):** Always use `fetcher` from `@/util/fetcher`. Never use raw `fetch`.
 - **Server Actions:** Must have `"use server"` at the top. Return typed state objects with `errors` and optional `success`.
@@ -74,9 +86,9 @@ pnpm dev
 
 ## Documentation
 
-Full coding conventions are in `paw/コーディング規約/`:
+Full coding conventions are in `scratch/コーディング規約/`:
 
-- [バックエンド.md](paw/コーディング規約/バックエンド.md)
-- [フロントエンド.md](paw/コーディング規約/フロントエンド.md)
+- [バックエンド.md](scratch/コーディング規約/バックエンド.md)
+- [フロントエンド.md](scratch/コーディング規約/フロントエンド.md)
 
-Design docs are in `paw/設計/`.
+Design docs are in `scratch/設計/`.
