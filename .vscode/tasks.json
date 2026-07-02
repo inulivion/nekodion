@@ -1,0 +1,79 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "api: bootRun",
+      "type": "shell",
+      "command": "set -a && source .env && set +a && ./gradlew api:bootRun",
+      "options": {
+        "cwd": "${workspaceFolder}/prowl"
+      },
+      "isBackground": true,
+      "problemMatcher": [
+        {
+          "pattern": [{ "regexp": ".", "file": 1, "location": 2, "message": 3 }],
+          "background": {
+            "activeOnStart": true,
+            "beginsPattern": ".*",
+            "endsPattern": "Started NekodionApiApplication"
+          }
+        }
+      ]
+    },
+    {
+      "label": "api: bootRun --debug-jvm",
+      "type": "shell",
+      "command": "set -a && source .env && set +a && ./gradlew api:bootRun --debug-jvm",
+      "options": {
+        "cwd": "${workspaceFolder}/prowl"
+      },
+      "isBackground": true,
+      "problemMatcher": [
+        {
+          "pattern": [{ "regexp": ".", "file": 1, "location": 2, "message": 3 }],
+          "background": {
+            "activeOnStart": true,
+            "beginsPattern": ".*",
+            "endsPattern": "Listening for transport dt_socket"
+          }
+        }
+      ]
+    },
+    {
+      "label": "batch: bootRun",
+      "type": "shell",
+      "command": "set -a && source .env && set +a && ./gradlew batch:bootRun --args='--batch.execute=${input:batchName}'",
+      "options": {
+        "cwd": "${workspaceFolder}/prowl"
+      },
+      "isBackground": false,
+      "problemMatcher": []
+    },
+    {
+      "label": "batch: bootRun --debug-jvm",
+      "type": "shell",
+      "command": "set -a && source .env && set +a && ./gradlew batch:bootRun --debug-jvm --args='--batch.execute=${input:batchName}'",
+      "options": {
+        "cwd": "${workspaceFolder}/prowl"
+      },
+      "isBackground": true,
+      "problemMatcher": [
+        {
+          "pattern": [{ "regexp": ".", "file": 1, "location": 2, "message": 3 }],
+          "background": {
+            "activeOnStart": true,
+            "beginsPattern": ".*",
+            "endsPattern": "Listening for transport dt_socket"
+          }
+        }
+      ]
+    }
+  ],
+  "inputs": [
+    {
+      "id": "batchName",
+      "type": "promptString",
+      "description": "実行するバッチ名 (--batch.execute=<name>)"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "name": "Debug (api:bootRun)",
+      "request": "attach",
+      "hostName": "localhost",
+      "port": 5005,
+      "preLaunchTask": "api: bootRun --debug-jvm"
+    },
+    {
+      "type": "java",
+      "name": "Debug (batch:bootRun)",
+      "request": "attach",
+      "hostName": "localhost",
+      "port": 5005,
+      "preLaunchTask": "batch: bootRun --debug-jvm"
+    }
+  ]
+}
