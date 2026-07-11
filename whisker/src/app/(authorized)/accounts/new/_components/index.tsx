@@ -31,6 +31,7 @@ export const CreateAccountPage = ({ templates }: Props) => {
             formAction={formAction}
             isPending={isPending}
             errors={state.errors}
+            defaultValues={state.values}
             templates={templates}
             submitLabel="追加する"
             pendingLabel="作成中..."

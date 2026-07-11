@@ -50,6 +50,7 @@ export const CreateTransactionPage = ({ accounts, categories }: Props) => {
             formAction={formAction}
             isPending={isPending}
             errors={state.errors}
+            defaultValues={state.values}
             accounts={accounts}
             categories={categories}
             submitLabel="記録する"

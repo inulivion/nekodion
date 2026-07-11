@@ -50,19 +50,21 @@ export const TransactionDetailPage = ({
             formAction={formAction}
             isPending={isPending}
             errors={state.errors}
-            defaultValues={{
-              transactionType: transaction.transactionType,
-              accountId:
-                transaction.accountId != null
-                  ? String(transaction.accountId)
-                  : "",
-              categoryId: String(transaction.categoryId),
-              transactionName: transaction.transactionName ?? "",
-              amount: transaction.amount,
-              transactionDate: transaction.transactionDateTime.split("T")[0],
-              description: transaction.description ?? "",
-              isAggregated: transaction.isAggregated,
-            }}
+            defaultValues={
+              state.values ?? {
+                transactionType: transaction.transactionType,
+                accountId:
+                  transaction.accountId != null
+                    ? String(transaction.accountId)
+                    : "",
+                categoryId: String(transaction.categoryId),
+                transactionName: transaction.transactionName ?? "",
+                amount: transaction.amount,
+                transactionDate: transaction.transactionDateTime.split("T")[0],
+                description: transaction.description ?? "",
+                isAggregated: transaction.isAggregated,
+              }
+            }
             accounts={accounts}
             categories={categories}
             hiddenId={String(transaction.id)}
