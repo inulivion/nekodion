@@ -3,12 +3,20 @@
 import { fetcher } from "@/util/fetcher";
 import { redirect } from "next/navigation";
 
+type AccountFormValues = {
+  accountType?: string;
+  accountTemplateId?: string;
+  accountName?: string;
+  initialAmount?: string;
+};
+
 export type AccountActionState = {
   errors?: {
     accountType?: string;
     accountName?: string;
     global?: string;
   };
+  values?: AccountFormValues;
 };
 
 export type CreateAccountActionState = AccountActionState;
@@ -22,10 +30,17 @@ export async function createAccountAction(
   const accountName = (formData.get("accountName") as string)?.trim();
   const initialAmountRaw = formData.get("initialAmount") as string | null;
 
+  const values: AccountFormValues = {
+    accountType,
+    accountTemplateId: accountTemplateId ?? "",
+    accountName,
+    initialAmount: initialAmountRaw ?? "",
+  };
+
   const errors: CreateAccountActionState["errors"] = {};
   if (!accountType) errors.accountType = "口座種別を選択してください";
   if (!accountName) errors.accountName = "口座名を入力してください";
-  if (Object.keys(errors).length > 0) return { errors };
+  if (Object.keys(errors).length > 0) return { errors, values };
 
   const result = await fetcher.post("/accounts", {
     accountType,
@@ -38,7 +53,7 @@ export async function createAccountAction(
   });
 
   if ("error" in result) {
-    return { errors: { global: "口座の作成に失敗しました" } };
+    return { errors: { global: "口座の作成に失敗しました" }, values };
   }
 
   redirect("/accounts");
@@ -55,10 +70,16 @@ export async function updateAccountAction(
   const accountTemplateId = formData.get("accountTemplateId") as string | null;
   const accountName = (formData.get("accountName") as string)?.trim();
 
+  const values: AccountFormValues = {
+    accountType,
+    accountTemplateId: accountTemplateId ?? "",
+    accountName,
+  };
+
   const errors: UpdateAccountActionState["errors"] = {};
   if (!accountType) errors.accountType = "口座種別を選択してください";
   if (!accountName) errors.accountName = "口座名を入力してください";
-  if (Object.keys(errors).length > 0) return { errors };
+  if (Object.keys(errors).length > 0) return { errors, values };
 
   const result = await fetcher.put(`/accounts/${id}`, {
     accountType,
@@ -67,7 +88,7 @@ export async function updateAccountAction(
   });
 
   if ("error" in result) {
-    return { errors: { global: "口座の更新に失敗しました" } };
+    return { errors: { global: "口座の更新に失敗しました" }, values };
   }
 
   redirect("/accounts");

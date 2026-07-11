@@ -21,6 +21,7 @@ type Props = {
     accountType?: string;
     accountTemplateId?: string;
     accountName?: string;
+    initialAmount?: string;
   };
   templates: AccountTemplateResponse[];
   submitLabel: string;
@@ -69,6 +70,7 @@ export const AccountForm = ({
         <select
           name="accountType"
           defaultValue={defaultValues?.accountType ?? ""}
+          key={defaultValues?.accountType ?? ""}
           className="border-input focus:ring-ring w-full rounded-lg border px-3 py-2 text-sm transition focus:border-transparent focus:ring-2 focus:outline-none"
         >
           <option value="">選択してください</option>
@@ -84,6 +86,7 @@ export const AccountForm = ({
         <select
           name="accountTemplateId"
           defaultValue={defaultValues?.accountTemplateId ?? ""}
+          key={defaultValues?.accountTemplateId ?? ""}
           onChange={handleTemplateChange}
           className="border-input focus:ring-ring w-full rounded-lg border px-3 py-2 text-sm transition focus:border-transparent focus:ring-2 focus:outline-none"
         >
@@ -117,6 +120,7 @@ export const AccountForm = ({
             name="initialAmount"
             placeholder="例: 100000"
             min={0}
+            defaultValue={defaultValues?.initialAmount ?? ""}
           />
         </FormField>
       )}

@@ -63,14 +63,16 @@ export const AccountDetailPage = ({ account, templates }: Props) => {
               formAction={formAction}
               isPending={isPending}
               errors={state.errors}
-              defaultValues={{
-                accountType: account.accountType,
-                accountTemplateId:
-                  account.accountTemplateId != null
-                    ? String(account.accountTemplateId)
-                    : "",
-                accountName: account.accountName,
-              }}
+              defaultValues={
+                state.values ?? {
+                  accountType: account.accountType,
+                  accountTemplateId:
+                    account.accountTemplateId != null
+                      ? String(account.accountTemplateId)
+                      : "",
+                  accountName: account.accountName,
+                }
+              }
               templates={templates}
               hiddenId={String(account.accountId)}
               submitLabel="更新する"

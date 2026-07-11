@@ -199,7 +199,9 @@ export const MonthlyPage = ({ initialData }: Props) => {
                 <p className="text-muted-foreground mb-3 text-sm font-semibold">
                   支出の内訳
                 </p>
-                <ExpensePieChart key={chartKey} items={expenseItems} />
+                <div className="flex items-center justify-center">
+                  <ExpensePieChart key={chartKey} items={expenseItems} />
+                </div>
                 <div className="mt-3">
                   <CategoryTypeTable items={expenseItems} />
                 </div>

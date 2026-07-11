@@ -5,7 +5,7 @@ export default function Home() {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center gap-8 py-2">
       <h1 className="text-4xl font-bold md:text-6xl">
-        子猫を<span className="text-yellow-700">こねこね</span>する
+        子猫を<span className="text-blue-600">こねこね</span>する
       </h1>
       <div className="flex items-center justify-center gap-2">
         <Button asChild variant="default" className="px-8 py-5 text-xl">

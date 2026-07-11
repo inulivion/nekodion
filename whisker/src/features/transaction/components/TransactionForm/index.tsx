@@ -28,7 +28,7 @@ type Props = {
     accountId?: string;
     categoryId?: string;
     transactionName?: string;
-    amount?: number;
+    amount?: number | string;
     transactionDate?: string;
     description?: string;
     isAggregated?: boolean;
@@ -80,6 +80,7 @@ export const TransactionForm = ({
         <select
           name="transactionType"
           defaultValue={defaultValues?.transactionType ?? ""}
+          key={defaultValues?.transactionType ?? ""}
           onChange={(e) => setSelectedType(e.target.value)}
           className="border-input focus:ring-ring w-full rounded-lg border px-3 py-2 text-sm transition focus:border-transparent focus:ring-2 focus:outline-none"
         >
@@ -93,7 +94,7 @@ export const TransactionForm = ({
         <select
           name="categoryId"
           defaultValue={defaultValues?.categoryId ?? ""}
-          key={selectedType}
+          key={`${selectedType}-${defaultValues?.categoryId ?? ""}`}
           className="border-input focus:ring-ring w-full rounded-lg border px-3 py-2 text-sm transition focus:border-transparent focus:ring-2 focus:outline-none"
         >
           <option value="">
@@ -117,6 +118,7 @@ export const TransactionForm = ({
         <select
           name="accountId"
           defaultValue={defaultValues?.accountId ?? ""}
+          key={defaultValues?.accountId ?? ""}
           className="border-input focus:ring-ring w-full rounded-lg border px-3 py-2 text-sm transition focus:border-transparent focus:ring-2 focus:outline-none"
         >
           <option value="">なし</option>

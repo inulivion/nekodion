@@ -34,6 +34,17 @@ export async function getMonthlyDataAction(
   };
 }
 
+type TransactionFormValues = {
+  transactionType?: string;
+  accountId?: string;
+  categoryId?: string;
+  transactionName?: string;
+  amount?: string;
+  transactionDate?: string;
+  description?: string;
+  isAggregated?: boolean;
+};
+
 export type CreateTransactionActionState = {
   success?: boolean;
   errors?: {
@@ -45,6 +56,7 @@ export type CreateTransactionActionState = {
     transactionDate?: string;
     global?: string;
   };
+  values?: TransactionFormValues;
 };
 
 export async function createTransactionAction(
@@ -60,6 +72,17 @@ export async function createTransactionAction(
   const description = (formData.get("description") as string)?.trim() || null;
   const isAggregated = formData.get("isAggregated") !== "false";
 
+  const values: TransactionFormValues = {
+    transactionType,
+    accountId,
+    categoryId,
+    transactionName,
+    amount: amountStr,
+    transactionDate,
+    description: description ?? "",
+    isAggregated,
+  };
+
   const errors: CreateTransactionActionState["errors"] = {};
   if (!transactionType) errors.transactionType = "取引種別を選択してください";
   if (!categoryId) errors.categoryId = "カテゴリーを選択してください";
@@ -67,7 +90,7 @@ export async function createTransactionAction(
   if (!amountStr || Number(amountStr) <= 0)
     errors.amount = "1以上の金額を入力してください";
   if (!transactionDate) errors.transactionDate = "取引日を入力してください";
-  if (Object.keys(errors).length > 0) return { errors };
+  if (Object.keys(errors).length > 0) return { errors, values };
 
   const result = await fetcher.post("/transactions", {
     transactionType,
@@ -81,7 +104,7 @@ export async function createTransactionAction(
   });
 
   if ("error" in result) {
-    return { errors: { global: "入出金の記録に失敗しました" } };
+    return { errors: { global: "入出金の記録に失敗しました" }, values };
   }
 
   return { success: true };
@@ -97,6 +120,7 @@ export type UpdateTransactionActionState = {
     transactionDate?: string;
     global?: string;
   };
+  values?: TransactionFormValues;
 };
 
 export async function updateTransactionAction(
@@ -113,6 +137,17 @@ export async function updateTransactionAction(
   const description = (formData.get("description") as string)?.trim() || null;
   const isAggregated = formData.get("isAggregated") !== "false";
 
+  const values: TransactionFormValues = {
+    transactionType,
+    accountId,
+    categoryId,
+    transactionName,
+    amount: amountStr,
+    transactionDate,
+    description: description ?? "",
+    isAggregated,
+  };
+
   const errors: UpdateTransactionActionState["errors"] = {};
   if (!transactionType) errors.transactionType = "取引種別を選択してください";
   if (!categoryId) errors.categoryId = "カテゴリーを選択してください";
@@ -120,7 +155,7 @@ export async function updateTransactionAction(
   if (!amountStr || Number(amountStr) <= 0)
     errors.amount = "1以上の金額を入力してください";
   if (!transactionDate) errors.transactionDate = "取引日を入力してください";
-  if (Object.keys(errors).length > 0) return { errors };
+  if (Object.keys(errors).length > 0) return { errors, values };
 
   const result = await fetcher.put(`/transactions/${id}`, {
     transactionType,
@@ -134,7 +169,7 @@ export async function updateTransactionAction(
   });
 
   if ("error" in result) {
-    return { errors: { global: "入出金の更新に失敗しました" } };
+    return { errors: { global: "入出金の更新に失敗しました" }, values };
   }
 
   redirect("/transactions");
