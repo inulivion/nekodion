@@ -4,8 +4,8 @@ import { MdOutlineLogout } from "react-icons/md";
 
 export const Header = () => {
   return (
-    <header className="bg-card/80 border-border fixed top-0 right-0 left-0 z-50 hidden border-b backdrop-blur-sm md:flex">
-      <div className="mx-auto flex w-full max-w-6xl items-center px-6 py-3">
+    <header className="fixed top-0 right-0 left-0 z-50 hidden bg-white/30 shadow-sm backdrop-blur-sm md:flex">
+      <div className="mx-auto flex w-full max-w-5xl items-center px-6 py-3">
         <div className="flex-1">
           <Link href="/home">
             <span className="text-lg font-bold">Nekodion</span>
@@ -32,7 +32,6 @@ export const Header = () => {
             className="flex items-center gap-1"
             prefetch={false}
           >
-            ログアウト
             <MdOutlineLogout className="text-lg" />
           </Link>
         </div>

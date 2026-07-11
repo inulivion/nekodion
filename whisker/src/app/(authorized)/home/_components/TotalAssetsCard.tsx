@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { Card, CardContent } from "@/components/ui/card";
 import { Eye, EyeOff } from "lucide-react";
 import { TotalAssetsResponse } from "@/features/transaction/types";
+import Image from "next/image";
 
 type Props = {
   totalAssets: TotalAssetsResponse;
@@ -22,28 +22,30 @@ export const TotalAssetsCard = ({ totalAssets, initialHidden }: Props) => {
   };
 
   return (
-    <Card className="shadow-sm ring-0">
-      <CardContent className="py-3">
-        <div className="flex items-center justify-between">
-          <p className="text-xl font-bold">総資産</p>
+    <div className="flex items-center justify-between rounded-lg bg-white/60 p-4 shadow-sm">
+      <div className="flex flex-col gap-2">
+        <p className="text-lg font-bold">総資産</p>
+        <div className="flex items-center">
+          <p className="mr-4 text-4xl font-bold">
+            {hidden
+              ? "¥ ---,---"
+              : `¥${totalAssets.totalAssets.toLocaleString()}`}
+          </p>
           <button
             onClick={toggle}
             className="text-muted-foreground"
             aria-label="総資産の表示切替"
           >
             {hidden ? (
-              <EyeOff className="h-5 w-5" />
+              <EyeOff className="mt-2 h-5 w-5" />
             ) : (
-              <Eye className="h-5 w-5" />
+              <Eye className="mt-2 h-5 w-5" />
             )}
           </button>
         </div>
-        <p className="text-right text-3xl font-bold">
-          {hidden
-            ? "¥ ---,---"
-            : `¥${totalAssets.totalAssets.toLocaleString()}`}
-        </p>
-      </CardContent>
-    </Card>
+        <p className="text-sm text-gray-500">前日比 →</p>
+      </div>
+      <Image src="/images/top-cat.png" alt="総資産" width={100} height={100} />
+    </div>
   );
 };

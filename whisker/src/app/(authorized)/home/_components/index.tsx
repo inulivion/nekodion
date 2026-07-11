@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 import { TransactionTable } from "@/features/transaction/components/TransactionTable";
 import { ExpensePieChart } from "@/features/transaction/components/ExpensePieChart";
@@ -39,28 +38,29 @@ export const HomePage = ({
         initialHidden={initialHidden}
       />
 
-      <Card className="shadow-sm ring-0">
-        <CardContent className="py-3">
-          <p className="text-muted-foreground mb-2 text-sm font-semibold">
-            {monthlySummary.month}月の収支
-          </p>
-          <div className="grid grid-cols-3 gap-2 text-center">
-            <div>
+      <div className="rounded-lg bg-white/60 p-4 shadow-sm">
+        <p className="text-muted-foreground mb-2 text-sm font-semibold">
+          {monthlySummary.month}月の収支
+        </p>
+        <div className="flex items-center justify-between gap-4">
+          <ExpensePieChart items={expenseItems} />
+          <div className="flex-1 space-y-4">
+            <div className="flex items-center justify-between">
               <p className="text-muted-foreground text-xs">収入</p>
-              <p className="text-sm font-bold text-blue-600">
+              <p className="flex-1 text-right text-2xl font-bold text-blue-600">
                 ¥{monthlySummary.totalIncome.toLocaleString()}
               </p>
             </div>
-            <div>
+            <div className="flex items-center justify-between">
               <p className="text-muted-foreground text-xs">支出</p>
-              <p className="text-sm font-bold text-red-500">
+              <p className="flex-1 text-right text-2xl font-bold text-red-500">
                 ¥{monthlySummary.totalExpense.toLocaleString()}
               </p>
             </div>
-            <div>
+            <div className="flex items-center justify-between">
               <p className="text-muted-foreground text-xs">収支</p>
               <p
-                className={`text-sm font-bold ${
+                className={`flex-1 text-right text-2xl font-bold ${
                   monthlyBalance >= 0 ? "text-blue-600" : "text-red-500"
                 }`}
               >
@@ -69,26 +69,15 @@ export const HomePage = ({
               </p>
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
-      {expenseItems.length > 0 && (
-        <Card className="shadow-sm ring-0">
-          <CardContent className="py-3">
-            <p className="text-muted-foreground mb-2 text-sm font-semibold">
-              {monthlySummary.month}月の支出内訳
-            </p>
-            <ExpensePieChart items={expenseItems} />
-          </CardContent>
-        </Card>
-      )}
-
-      <Card className="shadow-sm ring-0">
-        <CardHeader className="pb-3">
+      <div className="rounded-lg bg-white/60 p-4 shadow-sm">
+        <div className="pb-3">
           <div className="flex items-center justify-between">
-            <CardTitle className="text-muted-foreground text-sm font-semibold">
+            <div className="text-muted-foreground text-sm font-semibold">
               最近の入出金
-            </CardTitle>
+            </div>
             <Button asChild variant="ghost" size="xs" className="text-primary">
               <Link
                 href="/transactions/new"
@@ -99,8 +88,8 @@ export const HomePage = ({
               </Link>
             </Button>
           </div>
-        </CardHeader>
-        <CardContent>
+        </div>
+        <div>
           {limitedTransactions.length > 0 ? (
             <>
               <TransactionTable transactions={limitedTransactions} />
@@ -126,8 +115,8 @@ export const HomePage = ({
               まだ入出金がありません
             </p>
           )}
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
       <div className="pt-2 pb-4 md:hidden">
         <Button

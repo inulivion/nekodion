@@ -43,14 +43,14 @@ export const ExpensePieChart = ({ items }: Props) => {
   }));
 
   return (
-    <ResponsiveContainer width="100%" height={220}>
+    <ResponsiveContainer width={150} height={150}>
       <PieChart>
         <Pie
           data={data}
           cx="50%"
           cy="50%"
-          innerRadius={65}
-          outerRadius={95}
+          innerRadius={45}
+          outerRadius={75}
           paddingAngle={2}
           dataKey="value"
           nameKey="name"
