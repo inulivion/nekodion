@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { NAV_ITEMS } from "./const";
-import { MdOutlineLogout } from "react-icons/md";
+import { LogOut } from "lucide-react";
 
 export const Header = () => {
   return (
@@ -18,7 +18,7 @@ export const Header = () => {
               key={item.href}
               href={item.href}
               prefetch={true}
-              className="flex items-center px-4 py-2 text-sm font-medium whitespace-nowrap"
+              className="flex items-center gap-1 px-4 py-2 text-sm font-medium whitespace-nowrap"
             >
               <item.icon className="h-4 w-4" />
               {item.text}
@@ -32,7 +32,7 @@ export const Header = () => {
             className="flex items-center gap-1"
             prefetch={false}
           >
-            <MdOutlineLogout className="text-lg" />
+            <LogOut />
           </Link>
         </div>
       </div>

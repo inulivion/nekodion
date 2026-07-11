@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { MdOutlineLogout } from "react-icons/md";
+import { LogOut } from "lucide-react";
 
 export default function Error() {
   return (
@@ -13,7 +13,7 @@ export default function Error() {
         prefetch={false}
       >
         ログアウト
-        <MdOutlineLogout className="text-lg" />
+        <LogOut className="text-lg" />
       </Link>
     </div>
   );
