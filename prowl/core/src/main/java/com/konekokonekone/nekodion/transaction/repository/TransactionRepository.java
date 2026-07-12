@@ -75,7 +75,7 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
     Optional<Transaction> findByIdAndUserId(Long id, String userId);
 
     /**
-     * CARDを除く収入合計を取得（総資産計算用）
+     * CREDITを除く収入合計を取得（総資産計算用）
      */
     @Query("""
             SELECT
@@ -85,12 +85,13 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
             WHERE
                 t.userId = :userId
                 AND t.transactionType IN ('INCOME')
-                AND t.account.accountType <> 'CARD'
+                AND t.account.accountType <> 'CREDIT'
+                AND t.account.accountType <> 'UNCATEGORIZED'
             """)
-    BigDecimal sumIncomeExcludingCard(String userId);
+    BigDecimal sumIncomeExcludingCredit(String userId);
 
     /**
-     * CARDを除く支出合計を取得（総資産計算用）
+     * CREDITを除く支出合計を取得（総資産計算用）
      */
     @Query("""
             SELECT
@@ -100,9 +101,10 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
             WHERE
                 t.userId = :userId
                 AND t.transactionType IN ('EXPENSE')
-                AND t.account.accountType <> 'CARD'
+                AND t.account.accountType <> 'CREDIT'
+                AND t.account.accountType <> 'UNCATEGORIZED'
             """)
-    BigDecimal sumExpenseExcludingCard(String userId);
+    BigDecimal sumExpenseExcludingCredit(String userId);
 
     /**
      * 月次収入合計を取得

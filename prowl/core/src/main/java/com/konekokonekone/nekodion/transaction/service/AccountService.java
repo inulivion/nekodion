@@ -23,7 +23,7 @@ public class AccountService {
     private final AccountTemplateRepository accountTemplateRepository;
 
     /**
-     * ユーザーの口座一覧取得
+     * ユーザーの口座一覧取得（未分類口座は除外）
      *
      * @param userId ユーザーID
      * @return 口座一覧
@@ -65,9 +65,16 @@ public class AccountService {
         account.setUserId(userId);
         account.setInitialAmount(initialAmount != null ? initialAmount : BigDecimal.ZERO);
 
+        if (AccountType.UNCATEGORIZED.equals(account.getAccountType())) {
+            throw new IllegalArgumentException("未分類口座は作成できません。");
+        }
+
         if (accountTemplateId != null) {
             var template = accountTemplateRepository.findById(accountTemplateId)
                     .orElseThrow(() -> new EntityNotFoundException(String.format("口座テンプレートが見つかりません。口座テンプレートId[%d]", accountTemplateId)));
+            if (!template.getAccountType().equals(account.getAccountType())) {
+                throw new IllegalArgumentException(String.format("口座テンプレートの口座種別が一致しません。口座テンプレートId[%d]", accountTemplateId));
+            }
             account.setAccountTemplate(template);
         }
 
@@ -97,13 +104,35 @@ public class AccountService {
         account.setAccountType(AccountType.codeOf(accountTypeString));
         account.setAccountName(accountName);
 
+        if (AccountType.UNCATEGORIZED.equals(account.getAccountType())) {
+            throw new IllegalArgumentException("未分類口座は作成できません。");
+        }
+
         if (accountTemplateId != null) {
             var template = accountTemplateRepository.findById(accountTemplateId)
                     .orElseThrow(() -> new EntityNotFoundException(String.format("口座テンプレートが見つかりません。口座テンプレートId[%d]", accountTemplateId)));
+            if (!template.getAccountType().equals(account.getAccountType())) {
+                throw new IllegalArgumentException(String.format("口座テンプレートの口座種別が一致しません。口座テンプレートId[%d]", accountTemplateId));
+            }
             account.setAccountTemplate(template);
         } else {
             account.setAccountTemplate(null);
         }
+
+        accountRepository.save(account);
+    }
+
+    /**
+     * 未分類口座作成（ユーザー作成時に自動生成）
+     *
+     * @param userId ユーザーID
+     */
+    public void createUncategorizedAccount(String userId) {
+        var account = new Account();
+        account.setAccountType(AccountType.UNCATEGORIZED);
+        account.setAccountName("未分類");
+        account.setUserId(userId);
+        account.setInitialAmount(BigDecimal.ZERO);
 
         accountRepository.save(account);
     }

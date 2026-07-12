@@ -8,10 +8,10 @@ import java.util.Arrays;
 @Getter
 @AllArgsConstructor
 public enum AccountType {
-    BANK("BANK", "銀行", 1),
-    CARD("CARD", "カード", 2),
-    CASH("CASH", "財布（現金管理）", 3),
-    OTHER("OTHER", "その他", 4);
+    BANK("BANK", "銀行口座", 1),
+    CREDIT("CREDIT", "クレカ口座", 2),
+    MANUAL("MANUAL", "手動管理口座", 3),
+    UNCATEGORIZED("UNCATEGORIZED", "未分類口座", 4);
 
     private final String code;
 

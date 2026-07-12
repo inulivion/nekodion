@@ -7,6 +7,7 @@ import com.konekokonekone.nekodion.transaction.dto.CategoryTypeSummaryDto;
 import com.konekokonekone.nekodion.transaction.dto.MonthlySummaryDto;
 import com.konekokonekone.nekodion.transaction.dto.TransactionRequestDto;
 import com.konekokonekone.nekodion.transaction.entity.Transaction;
+import com.konekokonekone.nekodion.transaction.enums.AccountType;
 import com.konekokonekone.nekodion.transaction.enums.TransactionType;
 import com.konekokonekone.nekodion.transaction.repository.AccountRepository;
 import com.konekokonekone.nekodion.transaction.repository.TransactionRepository;
@@ -17,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -49,9 +49,9 @@ public class TransactionService {
      * @return 総資産
      */
     public BigDecimal getTotalAssets(String userId) {
-        var totalInitial = accountRepository.sumInitialAmountExcludingCard(userId);
-        var totalIncome = transactionRepository.sumIncomeExcludingCard(userId);
-        var totalExpense = transactionRepository.sumExpenseExcludingCard(userId);
+        var totalInitial = accountRepository.sumInitialAmountExcludingCredit(userId);
+        var totalIncome = transactionRepository.sumIncomeExcludingCredit(userId);
+        var totalExpense = transactionRepository.sumExpenseExcludingCredit(userId);
         return totalInitial.add(totalIncome).subtract(totalExpense);
     }
 
@@ -139,7 +139,8 @@ public class TransactionService {
         var account = dto.getAccountId() != null
                 ? accountRepository.findByIdAndUserId(dto.getAccountId(), userId)
                         .orElseThrow(() -> new EntityNotFoundException(String.format("口座が見つかりません。口座ID[%d]", dto.getAccountId())))
-                : null;
+                : accountRepository.findByUserIdAndAccountType(userId, AccountType.UNCATEGORIZED)
+                        .orElseThrow(() -> new EntityNotFoundException(String.format("未分類口座が見つかりません。ユーザーID[%s]", userId)));
         var category = categoryService.findAccessibleById(dto.getCategoryId(), userId);
 
         var transaction = new Transaction();
@@ -171,7 +172,8 @@ public class TransactionService {
         var account = dto.getAccountId() != null
                 ? accountRepository.findByIdAndUserId(dto.getAccountId(), userId)
                         .orElseThrow(() -> new EntityNotFoundException(String.format("口座が見つかりません。口座ID[%d]", dto.getAccountId())))
-                : null;
+                : accountRepository.findByUserIdAndAccountType(userId, AccountType.UNCATEGORIZED)
+                        .orElseThrow(() -> new EntityNotFoundException(String.format("未分類口座が見つかりません。ユーザーID[%s]", userId)));
         var newCategory = categoryService.findAccessibleById(dto.getCategoryId(), userId);
 
         var previousCategoryTypeName = transaction.getCategory().getCategoryType().getCategoryTypeName();
