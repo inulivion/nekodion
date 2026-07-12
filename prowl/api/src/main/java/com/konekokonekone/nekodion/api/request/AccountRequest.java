@@ -16,5 +16,5 @@ public class AccountRequest {
     @NotBlank
     private String accountName;
 
-    private BigDecimal initialAmount;
+    private BigDecimal balance;
 }

@@ -5,7 +5,6 @@ import com.konekokonekone.nekodion.transaction.enums.AccountType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -56,18 +55,4 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
                 a.userId = :userId
             """)
     List<Account> findByUserIdWithTemplate(String userId);
-
-    /**
-     * CREDITを除く初期残高の合計を取得（総資産計算用）
-     */
-    @Query("""
-            SELECT
-                COALESCE(SUM(a.initialAmount), 0)
-            FROM
-                Account a
-            WHERE
-                a.userId = :userId
-                AND a.accountType <> 'CREDIT'
-            """)
-    BigDecimal sumInitialAmountExcludingCredit(String userId);
 }

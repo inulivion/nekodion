@@ -21,13 +21,13 @@ type Props = {
     accountType?: string;
     accountTemplateId?: string;
     accountName?: string;
-    initialAmount?: string;
+    balance?: string;
   };
   templates: AccountTemplateResponse[];
   submitLabel: string;
   pendingLabel: string;
   hiddenId?: string;
-  showInitialAmount?: boolean;
+  showBalance?: boolean;
   extraActions?: React.ReactNode;
 };
 
@@ -40,7 +40,7 @@ export const AccountForm = ({
   submitLabel,
   pendingLabel,
   hiddenId,
-  showInitialAmount = false,
+  showBalance = false,
   extraActions,
 }: Props) => {
   const [accountName, setAccountName] = useState(
@@ -48,7 +48,7 @@ export const AccountForm = ({
   );
 
   const handleTemplateChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    if (!showInitialAmount) return;
+    if (hiddenId) return;
     const val = e.target.value;
     if (val) {
       const tpl = templates.find((t) => String(t.id) === val);
@@ -113,14 +113,13 @@ export const AccountForm = ({
         />
       </FormField>
 
-      {showInitialAmount && (
-        <FormField label="初期残高" optional>
+      {showBalance && (
+        <FormField label="残高" optional>
           <Input
             type="number"
-            name="initialAmount"
+            name="balance"
             placeholder="例: 100000"
-            min={0}
-            defaultValue={defaultValues?.initialAmount ?? ""}
+            defaultValue={defaultValues?.balance ?? ""}
           />
         </FormField>
       )}

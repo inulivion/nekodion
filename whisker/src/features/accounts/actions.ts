@@ -7,7 +7,7 @@ type AccountFormValues = {
   accountType?: string;
   accountTemplateId?: string;
   accountName?: string;
-  initialAmount?: string;
+  balance?: string;
 };
 
 export type AccountActionState = {
@@ -28,13 +28,13 @@ export async function createAccountAction(
   const accountType = formData.get("accountType") as string;
   const accountTemplateId = formData.get("accountTemplateId") as string | null;
   const accountName = (formData.get("accountName") as string)?.trim();
-  const initialAmountRaw = formData.get("initialAmount") as string | null;
+  const balanceRaw = formData.get("balance") as string | null;
 
   const values: AccountFormValues = {
     accountType,
     accountTemplateId: accountTemplateId ?? "",
     accountName,
-    initialAmount: initialAmountRaw ?? "",
+    balance: balanceRaw ?? "",
   };
 
   const errors: CreateAccountActionState["errors"] = {};
@@ -46,10 +46,8 @@ export async function createAccountAction(
     accountType,
     accountTemplateId: accountTemplateId ? Number(accountTemplateId) : null,
     accountName,
-    initialAmount:
-      initialAmountRaw !== null && initialAmountRaw !== ""
-        ? Number(initialAmountRaw)
-        : null,
+    balance:
+      balanceRaw !== null && balanceRaw !== "" ? Number(balanceRaw) : null,
   });
 
   if ("error" in result) {
@@ -69,11 +67,13 @@ export async function updateAccountAction(
   const accountType = formData.get("accountType") as string;
   const accountTemplateId = formData.get("accountTemplateId") as string | null;
   const accountName = (formData.get("accountName") as string)?.trim();
+  const balanceRaw = formData.get("balance") as string | null;
 
   const values: AccountFormValues = {
     accountType,
     accountTemplateId: accountTemplateId ?? "",
     accountName,
+    balance: balanceRaw ?? "",
   };
 
   const errors: UpdateAccountActionState["errors"] = {};
@@ -85,6 +85,8 @@ export async function updateAccountAction(
     accountType,
     accountTemplateId: accountTemplateId ? Number(accountTemplateId) : null,
     accountName,
+    balance:
+      balanceRaw !== null && balanceRaw !== "" ? Number(balanceRaw) : null,
   });
 
   if ("error" in result) {

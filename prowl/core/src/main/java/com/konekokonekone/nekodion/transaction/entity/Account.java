@@ -35,9 +35,6 @@ public class Account extends AbstractBaseEntity {
     @Column(name = "account_name")
     private String accountName;
 
-    @Column(name = "initial_amount")
-    private BigDecimal initialAmount = BigDecimal.ZERO;
-
     @PrePersist
     private void prePersist() {
         if (this.id == null) {
@@ -47,4 +44,16 @@ public class Account extends AbstractBaseEntity {
 
     @OneToMany(mappedBy = "account")
     private List<Transaction> transactions;
+
+    /**
+     * 口座残高を算出する（取引の入金・出金を集計）
+     */
+    public BigDecimal calculateBalance() {
+        return transactions.stream()
+                .map(t -> switch (t.getDirection()) {
+                    case IN -> t.getAmount();
+                    case OUT -> t.getAmount().negate();
+                })
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
 }

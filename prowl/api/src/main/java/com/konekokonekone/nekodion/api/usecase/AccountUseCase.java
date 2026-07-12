@@ -56,7 +56,7 @@ public class AccountUseCase {
                             .map(accountSummaryResponseMapper::toResponse)
                             .toList();
                     return AccountSummaryResponse.builder()
-                            .accountType(accountType.getAccountTypeName())
+                            .accountType(accountType.getCode())
                             .accounts(accountItems)
                             .build();
                 }).toList();
@@ -98,7 +98,7 @@ public class AccountUseCase {
                 request.getAccountType(),
                 request.getAccountTemplateId(),
                 request.getAccountName(),
-                request.getInitialAmount()
+                request.getBalance()
         );
     }
 
@@ -117,6 +117,9 @@ public class AccountUseCase {
                 request.getAccountTemplateId(),
                 request.getAccountName()
         );
+        if (request.getBalance() != null) {
+            accountService.updateAccountBalance(id, userId, request.getBalance());
+        }
     }
 
     /**

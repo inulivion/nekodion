@@ -13,7 +13,7 @@ import com.konekokonekone.nekodion.transaction.entity.Transaction;
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
 
     /**
-     * 既読の入出金一覧取得（通常一覧用）
+     * 既読の入出金一覧取得（通常一覧用。初期残高・残高調整の取引は含めない）
      */
     @Query("""
             SELECT
@@ -23,6 +23,7 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
             WHERE
                 t.userId = :userId
                 AND t.isRead = true
+                AND t.transactionType <> 'ADJUSTMENT'
             ORDER BY
                 t.transactionDateTime DESC
             """)

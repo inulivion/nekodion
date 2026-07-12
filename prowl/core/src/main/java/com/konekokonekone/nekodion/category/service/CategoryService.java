@@ -30,4 +30,15 @@ public class CategoryService {
                 .orElseThrow(() -> new EntityNotFoundException(
                         String.format("カテゴリーが見つかりません。カテゴリーID[%d]", id)));
     }
+
+    /**
+     * 未分類カテゴリーを取得
+     *
+     * @param isIncome 収入ならtrue
+     * @return 未分類カテゴリー
+     */
+    public Category findUnclassified(boolean isIncome) {
+        return categoryRepository.findUnclassified(isIncome)
+                .orElseThrow(() -> new EntityNotFoundException("未分類カテゴリーが見つかりません"));
+    }
 }

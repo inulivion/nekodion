@@ -14,17 +14,17 @@ import { Badge } from "@/components/ui/badge";
 
 const ACCOUNT_TYPE_ICONS = {
   BANK: Landmark,
-  CARD: CreditCard,
-  CASH: Wallet,
-  OTHER: Package,
+  CREDIT: CreditCard,
+  MANUAL: Wallet,
 };
 
 const ACCOUNT_TYPE_COLORS = {
   BANK: "text-blue-600 bg-blue-50",
-  CARD: "text-violet-600 bg-violet-50",
-  CASH: "text-emerald-600 bg-emerald-50",
-  OTHER: "text-slate-600 bg-slate-100",
+  CREDIT: "text-violet-600 bg-violet-50",
+  MANUAL: "text-emerald-600 bg-emerald-50",
 };
+
+const DEFAULT_ACCOUNT_TYPE_COLOR = "text-slate-600 bg-slate-100";
 
 type Props = {
   accountGroup: AccountSummaryResponse;
@@ -38,7 +38,7 @@ export const AccountCard = ({ accountGroup }: Props) => {
   const colorClass =
     ACCOUNT_TYPE_COLORS[
       accountGroup.accountType as keyof typeof ACCOUNT_TYPE_COLORS
-    ] ?? ACCOUNT_TYPE_COLORS.OTHER;
+    ] ?? DEFAULT_ACCOUNT_TYPE_COLOR;
 
   return (
     <Card
@@ -76,7 +76,7 @@ export const AccountCard = ({ accountGroup }: Props) => {
                   {account.accountName}
                 </span>
                 <div className="flex items-center gap-1.5">
-                  {accountGroup.accountType === "カード" ? (
+                  {accountGroup.accountType === "CREDIT" ? (
                     <span className="text-sm font-semibold">
                       ¥{Math.abs(account.totalAmount).toLocaleString()}
                     </span>

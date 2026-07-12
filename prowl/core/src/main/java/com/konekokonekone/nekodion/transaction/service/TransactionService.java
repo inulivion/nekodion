@@ -1,6 +1,7 @@
 package com.konekokonekone.nekodion.transaction.service;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -12,6 +13,7 @@ import com.konekokonekone.nekodion.support.exception.EntityNotFoundException;
 import com.konekokonekone.nekodion.transaction.dto.CategoryTypeSummaryDto;
 import com.konekokonekone.nekodion.transaction.dto.MonthlySummaryDto;
 import com.konekokonekone.nekodion.transaction.dto.TransactionRequestDto;
+import com.konekokonekone.nekodion.transaction.entity.Account;
 import com.konekokonekone.nekodion.transaction.entity.Transaction;
 import com.konekokonekone.nekodion.transaction.enums.AccountType;
 import com.konekokonekone.nekodion.transaction.enums.DirectionType;
@@ -45,17 +47,16 @@ public class TransactionService {
     }
 
     /**
-     * 総資産を取得（クレカ口座を除く初期残高合計 + 収支）
+     * 総資産を取得（クレカ口座を除く入出金の合計。初期残高・残高調整はADJUSTMENT取引として含まれる）
      *
      * @param userId ユーザーID
      * @return 総資産
      */
     public BigDecimal getTotalAssets(String userId) {
-        var totalInitial = accountRepository.sumInitialAmountExcludingCredit(userId);
         var totalIn = transactionRepository.sumInExcludingCredit(userId);
         var totalOut = transactionRepository.sumOutExcludingCredit(userId);
 
-        return totalInitial.add(totalIn).subtract(totalOut);
+        return totalIn.subtract(totalOut);
     }
 
     /**
@@ -132,12 +133,44 @@ public class TransactionService {
     }
 
     /**
+     * 残高調整取引を記録する（口座の初期残高設定・残高編集時の差分反映用）
+     *
+     * @param account         対象口座
+     * @param userId          ユーザーID
+     * @param diff            残高との差分（正なら入金、負なら出金）
+     * @param transactionName 取引名
+     */
+    public void createAdjustmentTransaction(Account account, String userId, BigDecimal diff, String transactionName) {
+        var direction = diff.signum() >= 0 ? DirectionType.IN : DirectionType.OUT;
+        var category = categoryService.findUnclassified(direction == DirectionType.IN);
+
+        var transaction = new Transaction();
+        transaction.setUserId(userId);
+        transaction.setAccount(account);
+        transaction.setCategory(category);
+        transaction.setTransactionType(TransactionType.ADJUSTMENT);
+        transaction.setDirection(direction);
+        transaction.setTransactionName(transactionName);
+        transaction.setAmount(diff.abs());
+        transaction.setTransactionDateTime(LocalDateTime.now());
+        transaction.setIsAggregated(false);
+        transaction.setIsConfirmed(true);
+        transaction.setIsRead(true);
+        transaction.setIsDeletable(false);
+
+        transactionRepository.save(transaction);
+    }
+
+    /**
      * 入出金記録
      *
      * @param userId ユーザーID
      * @param dto    入出金記録リクエスト
      */
     public void createTransaction(String userId, TransactionRequestDto dto) {
+        if (TransactionType.ADJUSTMENT.equals(TransactionType.codeOf(dto.getTransactionType()))) {
+            throw new IllegalArgumentException("調整取引は直接作成できません。");
+        }
         var account = dto.getAccountId() != null
                 ? accountRepository.findByIdAndUserId(dto.getAccountId(), userId)
                         .orElseThrow(() -> new EntityNotFoundException(
@@ -173,8 +206,14 @@ public class TransactionService {
      * @param dto    入出金更新リクエスト
      */
     public void updateTransaction(Long id, String userId, TransactionRequestDto dto) {
+        if (TransactionType.ADJUSTMENT.equals(TransactionType.codeOf(dto.getTransactionType()))) {
+            throw new IllegalArgumentException("調整取引は直接更新できません。");
+        }
         var transaction = transactionRepository.findByIdAndUserId(id, userId)
                 .orElseThrow(() -> new EntityNotFoundException(String.format("入出金が見つかりません。入出金ID[%d]", id)));
+        if (TransactionType.ADJUSTMENT.equals(transaction.getTransactionType())) {
+            throw new IllegalArgumentException(String.format("調整取引は更新できません。入出金ID[%d]", id));
+        }
         var account = dto.getAccountId() != null
                 ? accountRepository.findByIdAndUserId(dto.getAccountId(), userId)
                         .orElseThrow(() -> new EntityNotFoundException(
