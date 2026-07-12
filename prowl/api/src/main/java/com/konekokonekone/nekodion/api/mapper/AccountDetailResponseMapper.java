@@ -1,11 +1,12 @@
 package com.konekokonekone.nekodion.api.mapper;
 
-import com.konekokonekone.nekodion.api.response.AccountDetailResponse;
-import com.konekokonekone.nekodion.transaction.entity.Account;
+import java.math.BigDecimal;
+
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-import java.math.BigDecimal;
+import com.konekokonekone.nekodion.api.response.AccountDetailResponse;
+import com.konekokonekone.nekodion.transaction.entity.Account;
 
 @Mapper(componentModel = "spring")
 public interface AccountDetailResponseMapper {
@@ -19,9 +20,9 @@ public interface AccountDetailResponseMapper {
     default BigDecimal getTotalAmount(Account account) {
         var base = account.getInitialAmount() != null ? account.getInitialAmount() : BigDecimal.ZERO;
         return account.getTransactions().stream()
-                .map(t -> switch (t.getTransactionType()) {
-                    case INCOME -> t.getAmount();
-                    case EXPENSE -> t.getAmount().negate();
+                .map(t -> switch (t.getDirection()) {
+                    case IN -> t.getAmount();
+                    case OUT -> t.getAmount().negate();
                     default -> BigDecimal.ZERO;
                 })
                 .reduce(base, BigDecimal::add);

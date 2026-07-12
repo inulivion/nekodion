@@ -1,17 +1,16 @@
 package com.konekokonekone.nekodion.transaction.enums;
 
+import java.util.Arrays;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-
-import java.util.Arrays;
 
 @Getter
 @AllArgsConstructor
 public enum TransactionType {
-    INCOME("INCOME", "収入", 1),
-    EXPENSE("EXPENSE", "支出", 2),
-    TRANSFER_OUT("TRANSFER_OUT", "振替（出金）", 3),
-    TRANSFER_IN("TRANSFER_IN", "振替（入金）", 4);
+    NORMAL("NORMAL", "通常取引", 1),
+    TRANSFER("TRANSFER", "振替取引", 2),
+    ADJUSTMENT("ADJUSTMENT", "調整取引", 3);
 
     private final String code;
 
@@ -23,8 +22,8 @@ public enum TransactionType {
         return code == null
                 ? null
                 : Arrays.stream(TransactionType.values())
-                .filter(e -> e.code.equals(code))
-                .findFirst()
-                .orElse(null);
+                        .filter(e -> e.code.equals(code))
+                        .findFirst()
+                        .orElse(null);
     }
 }

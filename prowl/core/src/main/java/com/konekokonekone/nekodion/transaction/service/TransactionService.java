@@ -1,5 +1,11 @@
 package com.konekokonekone.nekodion.transaction.service;
 
+import java.math.BigDecimal;
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.konekokonekone.nekodion.category.service.CategoryMappingService;
 import com.konekokonekone.nekodion.category.service.CategoryService;
 import com.konekokonekone.nekodion.support.exception.EntityNotFoundException;
@@ -8,16 +14,12 @@ import com.konekokonekone.nekodion.transaction.dto.MonthlySummaryDto;
 import com.konekokonekone.nekodion.transaction.dto.TransactionRequestDto;
 import com.konekokonekone.nekodion.transaction.entity.Transaction;
 import com.konekokonekone.nekodion.transaction.enums.AccountType;
+import com.konekokonekone.nekodion.transaction.enums.DirectionType;
 import com.konekokonekone.nekodion.transaction.enums.TransactionType;
 import com.konekokonekone.nekodion.transaction.repository.AccountRepository;
 import com.konekokonekone.nekodion.transaction.repository.TransactionRepository;
+
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-
-import java.math.BigDecimal;
 
 @Service
 @RequiredArgsConstructor
@@ -43,16 +45,17 @@ public class TransactionService {
     }
 
     /**
-     * 総資産を取得（CARD口座を除く初期残高合計 + 収入合計 - 支出合計）
+     * 総資産を取得（クレカ口座を除く初期残高合計 + 収支）
      *
      * @param userId ユーザーID
      * @return 総資産
      */
     public BigDecimal getTotalAssets(String userId) {
         var totalInitial = accountRepository.sumInitialAmountExcludingCredit(userId);
-        var totalIncome = transactionRepository.sumIncomeExcludingCredit(userId);
-        var totalExpense = transactionRepository.sumExpenseExcludingCredit(userId);
-        return totalInitial.add(totalIncome).subtract(totalExpense);
+        var totalIn = transactionRepository.sumInExcludingCredit(userId);
+        var totalOut = transactionRepository.sumOutExcludingCredit(userId);
+
+        return totalInitial.add(totalIn).subtract(totalOut);
     }
 
     /**
@@ -64,7 +67,7 @@ public class TransactionService {
      * @return 月次収支
      */
     public MonthlySummaryDto getMonthlySummary(String userId, int year, int month) {
-        var totalIncome = transactionRepository.sumIncomeByMonth(userId, year, month);
+        var totalIncome = transactionRepository.sumInOutByMonth(userId, year, month);
         var totalExpense = transactionRepository.sumExpenseByMonth(userId, year, month);
         return new MonthlySummaryDto(year, month, totalIncome, totalExpense);
     }
@@ -82,15 +85,14 @@ public class TransactionService {
                 .map(row -> new CategoryTypeSummaryDto(
                         (String) row[0],
                         (Boolean) row[1],
-                        (BigDecimal) row[2]
-                ))
+                        (BigDecimal) row[2]))
                 .toList();
     }
 
     /**
      * 入出金詳細取得
      *
-     * @param id 入出金ID
+     * @param id     入出金ID
      * @param userId ユーザーID
      * @return 入出金
      */
@@ -123,7 +125,7 @@ public class TransactionService {
      * 指定IDの入出金を既読にする
      *
      * @param userId ユーザーID
-     * @param ids 既読にする入出金IDリスト
+     * @param ids    既読にする入出金IDリスト
      */
     public void markAsRead(String userId, List<Long> ids) {
         transactionRepository.markAsReadByIds(userId, ids);
@@ -133,14 +135,16 @@ public class TransactionService {
      * 入出金記録
      *
      * @param userId ユーザーID
-     * @param dto 入出金記録リクエスト
+     * @param dto    入出金記録リクエスト
      */
     public void createTransaction(String userId, TransactionRequestDto dto) {
         var account = dto.getAccountId() != null
                 ? accountRepository.findByIdAndUserId(dto.getAccountId(), userId)
-                        .orElseThrow(() -> new EntityNotFoundException(String.format("口座が見つかりません。口座ID[%d]", dto.getAccountId())))
+                        .orElseThrow(() -> new EntityNotFoundException(
+                                String.format("口座が見つかりません。口座ID[%d]", dto.getAccountId())))
                 : accountRepository.findByUserIdAndAccountType(userId, AccountType.UNCATEGORIZED)
-                        .orElseThrow(() -> new EntityNotFoundException(String.format("未分類口座が見つかりません。ユーザーID[%s]", userId)));
+                        .orElseThrow(
+                                () -> new EntityNotFoundException(String.format("未分類口座が見つかりません。ユーザーID[%s]", userId)));
         var category = categoryService.findAccessibleById(dto.getCategoryId(), userId);
 
         var transaction = new Transaction();
@@ -148,6 +152,7 @@ public class TransactionService {
         transaction.setAccount(account);
         transaction.setCategory(category);
         transaction.setTransactionType(TransactionType.codeOf(dto.getTransactionType()));
+        transaction.setDirection(DirectionType.codeOf(dto.getDirection()));
         transaction.setTransactionName(dto.getTransactionName());
         transaction.setAmount(dto.getAmount());
         transaction.setTransactionDateTime(dto.getTransactionDateTime());
@@ -155,6 +160,7 @@ public class TransactionService {
         transaction.setIsAggregated(dto.getIsAggregated() != null ? dto.getIsAggregated() : true);
         transaction.setIsConfirmed(true);
         transaction.setIsRead(dto.getIsRead() != null ? dto.getIsRead() : true);
+        transaction.setIsDeletable(dto.getIsDeletable() != null ? dto.getIsDeletable() : true);
 
         transactionRepository.save(transaction);
     }
@@ -162,18 +168,20 @@ public class TransactionService {
     /**
      * 入出金更新
      *
-     * @param id 入出金ID
+     * @param id     入出金ID
      * @param userId ユーザーID
-     * @param dto 入出金更新リクエスト
+     * @param dto    入出金更新リクエスト
      */
     public void updateTransaction(Long id, String userId, TransactionRequestDto dto) {
         var transaction = transactionRepository.findByIdAndUserId(id, userId)
                 .orElseThrow(() -> new EntityNotFoundException(String.format("入出金が見つかりません。入出金ID[%d]", id)));
         var account = dto.getAccountId() != null
                 ? accountRepository.findByIdAndUserId(dto.getAccountId(), userId)
-                        .orElseThrow(() -> new EntityNotFoundException(String.format("口座が見つかりません。口座ID[%d]", dto.getAccountId())))
+                        .orElseThrow(() -> new EntityNotFoundException(
+                                String.format("口座が見つかりません。口座ID[%d]", dto.getAccountId())))
                 : accountRepository.findByUserIdAndAccountType(userId, AccountType.UNCATEGORIZED)
-                        .orElseThrow(() -> new EntityNotFoundException(String.format("未分類口座が見つかりません。ユーザーID[%s]", userId)));
+                        .orElseThrow(
+                                () -> new EntityNotFoundException(String.format("未分類口座が見つかりません。ユーザーID[%s]", userId)));
         var newCategory = categoryService.findAccessibleById(dto.getCategoryId(), userId);
 
         var previousCategoryTypeName = transaction.getCategory().getCategoryType().getCategoryTypeName();
@@ -185,11 +193,14 @@ public class TransactionService {
         transaction.setAccount(account);
         transaction.setCategory(newCategory);
         transaction.setTransactionType(TransactionType.codeOf(dto.getTransactionType()));
+        transaction.setDirection(DirectionType.codeOf(dto.getDirection()));
         transaction.setTransactionName(dto.getTransactionName());
         transaction.setAmount(dto.getAmount());
         transaction.setTransactionDateTime(dto.getTransactionDateTime());
         transaction.setDescription(dto.getDescription());
-        transaction.setIsAggregated(dto.getIsAggregated() != null ? dto.getIsAggregated() : transaction.getIsAggregated());
+        transaction
+                .setIsAggregated(dto.getIsAggregated() != null ? dto.getIsAggregated() : transaction.getIsAggregated());
+        transaction.setIsDeletable(dto.getIsDeletable() != null ? dto.getIsDeletable() : transaction.getIsDeletable());
 
         transactionRepository.save(transaction);
     }
@@ -197,12 +208,15 @@ public class TransactionService {
     /**
      * 入出金削除
      *
-     * @param id 入出金ID
+     * @param id     入出金ID
      * @param userId ユーザーID
      */
     public void deleteTransaction(Long id, String userId) {
         var transaction = transactionRepository.findByIdAndUserId(id, userId)
                 .orElseThrow(() -> new EntityNotFoundException(String.format("入出金が見つかりません。入出金ID[%d]", id)));
+        if (!Boolean.TRUE.equals(transaction.getIsDeletable())) {
+            throw new IllegalArgumentException(String.format("この入出金は削除できません。入出金ID[%d]", id));
+        }
         transactionRepository.delete(transaction);
     }
 }

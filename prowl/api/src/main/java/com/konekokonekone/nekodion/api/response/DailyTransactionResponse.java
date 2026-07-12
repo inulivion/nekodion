@@ -1,13 +1,13 @@
 package com.konekokonekone.nekodion.api.response;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.List;
 
 @Data
 @Builder
@@ -27,6 +27,8 @@ public class DailyTransactionResponse {
         private BigDecimal amount;
 
         private String transactionType;
+
+        private String direction;
 
         private String transactionName;
 

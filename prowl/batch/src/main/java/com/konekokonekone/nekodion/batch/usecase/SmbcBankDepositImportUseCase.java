@@ -1,5 +1,17 @@
 package com.konekokonekone.nekodion.batch.usecase;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.konekokonekone.nekodion.batch.runner.BatchResult;
 import com.konekokonekone.nekodion.batch.runner.BatchResultStatus;
 import com.konekokonekone.nekodion.category.service.CategoryMappingService;
@@ -11,19 +23,9 @@ import com.konekokonekone.nekodion.transaction.entity.Account;
 import com.konekokonekone.nekodion.transaction.enums.TransactionType;
 import com.konekokonekone.nekodion.transaction.service.TransactionService;
 import com.konekokonekone.nekodion.user.entity.User;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Slf4j
 @Service
@@ -43,7 +45,7 @@ public class SmbcBankDepositImportUseCase {
     private static final int MAX_RESULTS = 100;
 
     private static final DateTimeFormatter QUERY_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy/MM/dd");
-    
+
     private static final DateTimeFormatter BODY_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy年MM月dd日");
 
     private static final Pattern DATE_PATTERN = Pattern.compile("◇?入金日[　 ]*：[　 ]*(\\d{4}年\\d{2}月\\d{2}日)");
@@ -97,11 +99,13 @@ public class SmbcBankDepositImportUseCase {
         var dto = TransactionRequestDto.builder()
                 .accountId(account.getId())
                 .categoryId(category.getId())
-                .transactionType(TransactionType.INCOME.getCode())
+                .transactionType(TransactionType.NORMAL.getCode())
+                .direction("IN")
                 .transactionName(shopName)
                 .amount(amount)
                 .transactionDateTime(transactionDateTime)
                 .isRead(false)
+                .isDeletable(false)
                 .build();
 
         transactionService.createTransaction(userId, dto);
@@ -110,7 +114,8 @@ public class SmbcBankDepositImportUseCase {
 
     private LocalDateTime extractDate(String body) {
         Matcher m = DATE_PATTERN.matcher(body);
-        if (!m.find()) throw new IllegalArgumentException("入金日が見つかりません");
+        if (!m.find())
+            throw new IllegalArgumentException("入金日が見つかりません");
         return LocalDate.parse(m.group(1), BODY_DATE_FORMAT).atStartOfDay();
     }
 
@@ -121,7 +126,8 @@ public class SmbcBankDepositImportUseCase {
 
     private BigDecimal extractAmount(String body) {
         Matcher m = AMOUNT_PATTERN.matcher(body);
-        if (!m.find()) throw new IllegalArgumentException("金額が見つかりません");
+        if (!m.find())
+            throw new IllegalArgumentException("金額が見つかりません");
         return new BigDecimal(m.group(1).replace(",", ""));
     }
 }

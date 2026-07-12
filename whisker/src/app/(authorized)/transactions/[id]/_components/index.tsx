@@ -52,7 +52,7 @@ export const TransactionDetailPage = ({
             errors={state.errors}
             defaultValues={
               state.values ?? {
-                transactionType: transaction.transactionType,
+                direction: transaction.direction,
                 accountId:
                   transaction.accountId != null
                     ? String(transaction.accountId)
@@ -71,19 +71,21 @@ export const TransactionDetailPage = ({
             submitLabel="更新する"
             pendingLabel="更新中..."
             extraActions={
-              <Button
-                type="button"
-                variant="outline"
-                disabled={isPending}
-                onClick={async () => {
-                  if (!confirm("この入出金を削除しますか？")) return;
-                  await deleteTransactionAction(transaction.id);
-                }}
-                className="border-destructive text-destructive hover:bg-destructive/10 hover:text-destructive w-full"
-              >
-                <Trash2 className="mr-1.5 h-4 w-4" />
-                削除する
-              </Button>
+              transaction.isDeletable ? (
+                <Button
+                  type="button"
+                  variant="outline"
+                  disabled={isPending}
+                  onClick={async () => {
+                    if (!confirm("この入出金を削除しますか？")) return;
+                    await deleteTransactionAction(transaction.id);
+                  }}
+                  className="border-destructive text-destructive hover:bg-destructive/10 hover:text-destructive w-full"
+                >
+                  <Trash2 className="mr-1.5 h-4 w-4" />
+                  削除する
+                </Button>
+              ) : undefined
             }
           />
         </CardContent>
