@@ -1,0 +1,47 @@
+# ローカル用
+
+services:
+  db2:
+    image: mysql:8.4
+    platform: linux/amd64
+    container_name: nekodion-db2
+    environment:
+      MYSQL_ROOT_PASSWORD: pass
+      MYSQL_DATABASE: nekodion
+      MYSQL_USER: user
+      MYSQL_PASSWORD: pass
+      TZ: Asia/Tokyo
+    ports:
+      - "127.0.0.1:3369:3306"
+    volumes:
+      - nekodion_db_data2:/var/lib/mysql
+    networks:
+      - nekodion-net2
+    healthcheck:
+      test:
+        ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-ppass"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  flyway2:
+    image: flyway/flyway:11
+    platform: linux/amd64
+    container_name: nekodion-flyway2
+    environment:
+      FLYWAY_URL: jdbc:mysql://db2:3306/nekodion?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=Asia/Tokyo
+      FLYWAY_USER: user
+      FLYWAY_PASSWORD: pass
+      FLYWAY_LOCATIONS: filesystem:/flyway/sql
+    volumes:
+      - ../../fluffy/src/main/resources/db/migration:/flyway/sql
+    depends_on:
+      db2:
+        condition: service_healthy
+    networks:
+      - nekodion-net2
+
+volumes:
+  nekodion_db_data2:
+networks:
+  nekodion-net2:
