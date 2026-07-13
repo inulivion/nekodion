@@ -11,7 +11,7 @@ import { CategoryTypeResponse } from "@/features/category/types";
 
 type FormErrors = {
   global?: string;
-  transactionType?: string;
+  direction?: string;
   accountId?: string;
   categoryId?: string;
   transactionName?: string;
@@ -24,7 +24,7 @@ type Props = {
   isPending: boolean;
   errors?: FormErrors;
   defaultValues?: {
-    transactionType?: string;
+    direction?: string;
     accountId?: string;
     categoryId?: string;
     transactionName?: string;
@@ -57,14 +57,14 @@ export const TransactionForm = ({
   formRef,
   hiddenId,
 }: Props) => {
-  const [selectedType, setSelectedType] = useState(
-    defaultValues?.transactionType ?? "",
+  const [selectedDirection, setSelectedDirection] = useState(
+    defaultValues?.direction ?? "",
   );
   const [isAggregated, setIsAggregated] = useState(
     defaultValues?.isAggregated ?? true,
   );
 
-  const isIncome = selectedType === "INCOME";
+  const isIncome = selectedDirection === "IN";
   const visibleCategories = categories.filter((ct) => ct.isIncome === isIncome);
 
   return (
@@ -76,17 +76,17 @@ export const TransactionForm = ({
         </div>
       )}
 
-      <FormField label="取引種別" error={errors?.transactionType}>
+      <FormField label="取引種別" error={errors?.direction}>
         <select
-          name="transactionType"
-          defaultValue={defaultValues?.transactionType ?? ""}
-          key={defaultValues?.transactionType ?? ""}
-          onChange={(e) => setSelectedType(e.target.value)}
+          name="direction"
+          defaultValue={defaultValues?.direction ?? ""}
+          key={defaultValues?.direction ?? ""}
+          onChange={(e) => setSelectedDirection(e.target.value)}
           className="border-input focus:ring-ring w-full rounded-lg border px-3 py-2 text-sm transition focus:border-transparent focus:ring-2 focus:outline-none"
         >
           <option value="">選択してください</option>
-          <option value="INCOME">収入</option>
-          <option value="EXPENSE">支出</option>
+          <option value="IN">収入</option>
+          <option value="OUT">支出</option>
         </select>
       </FormField>
 
@@ -94,11 +94,11 @@ export const TransactionForm = ({
         <select
           name="categoryId"
           defaultValue={defaultValues?.categoryId ?? ""}
-          key={`${selectedType}-${defaultValues?.categoryId ?? ""}`}
+          key={`${selectedDirection}-${defaultValues?.categoryId ?? ""}`}
           className="border-input focus:ring-ring w-full rounded-lg border px-3 py-2 text-sm transition focus:border-transparent focus:ring-2 focus:outline-none"
         >
           <option value="">
-            {selectedType
+            {selectedDirection
               ? "選択してください"
               : "取引種別を先に選択してください"}
           </option>

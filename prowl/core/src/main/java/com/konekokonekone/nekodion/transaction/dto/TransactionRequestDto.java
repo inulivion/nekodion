@@ -1,12 +1,12 @@
 package com.konekokonekone.nekodion.transaction.dto;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -20,6 +20,8 @@ public class TransactionRequestDto {
 
     private String transactionType;
 
+    private String direction;
+
     private String transactionName;
 
     private BigDecimal amount;
@@ -31,4 +33,6 @@ public class TransactionRequestDto {
     private Boolean isAggregated;
 
     private Boolean isRead;
+
+    private Boolean isDeletable;
 }

@@ -1,18 +1,19 @@
 package com.konekokonekone.nekodion.transaction.repository;
 
-import com.konekokonekone.nekodion.transaction.entity.Transaction;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
-
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+
+import com.konekokonekone.nekodion.transaction.entity.Transaction;
+
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
 
     /**
-     * 既読の入出金一覧取得（通常一覧用）
+     * 既読の入出金一覧取得（通常一覧用。初期残高・残高調整の取引は含めない）
      */
     @Query("""
             SELECT
@@ -22,6 +23,7 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
             WHERE
                 t.userId = :userId
                 AND t.isRead = true
+                AND t.transactionType <> 'ADJUSTMENT'
             ORDER BY
                 t.transactionDateTime DESC
             """)
@@ -75,7 +77,7 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
     Optional<Transaction> findByIdAndUserId(Long id, String userId);
 
     /**
-     * CARDを除く収入合計を取得（総資産計算用）
+     * CREDITを除く入金合計を取得（総資産計算用）
      */
     @Query("""
             SELECT
@@ -84,13 +86,14 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
                 Transaction t
             WHERE
                 t.userId = :userId
-                AND t.transactionType IN ('INCOME')
-                AND t.account.accountType <> 'CARD'
+                AND t.direction IN ('IN')
+                AND t.account.accountType <> 'CREDIT'
+                AND t.account.accountType <> 'UNCATEGORIZED'
             """)
-    BigDecimal sumIncomeExcludingCard(String userId);
+    BigDecimal sumInExcludingCredit(String userId);
 
     /**
-     * CARDを除く支出合計を取得（総資産計算用）
+     * CREDITを除く出金合計を取得（総資産計算用）
      */
     @Query("""
             SELECT
@@ -99,10 +102,11 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
                 Transaction t
             WHERE
                 t.userId = :userId
-                AND t.transactionType IN ('EXPENSE')
-                AND t.account.accountType <> 'CARD'
+                AND t.direction IN ('OUT')
+                AND t.account.accountType <> 'CREDIT'
+                AND t.account.accountType <> 'UNCATEGORIZED'
             """)
-    BigDecimal sumExpenseExcludingCard(String userId);
+    BigDecimal sumOutExcludingCredit(String userId);
 
     /**
      * 月次収入合計を取得
@@ -114,12 +118,12 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
                 Transaction t
             WHERE
                 t.userId = :userId
-                AND t.transactionType IN ('INCOME')
+                AND t.direction IN ('IN')
                 AND YEAR(t.transactionDateTime) = :year
                 AND MONTH(t.transactionDateTime) = :month
                 AND t.isAggregated = true
             """)
-    BigDecimal sumIncomeByMonth(String userId, int year, int month);
+    BigDecimal sumInOutByMonth(String userId, int year, int month);
 
     /**
      * 月次支出合計を取得
@@ -131,7 +135,7 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
                 Transaction t
             WHERE
                 t.userId = :userId
-                AND t.transactionType IN ('EXPENSE')
+                AND t.direction IN ('OUT')
                 AND YEAR(t.transactionDateTime) = :year
                 AND MONTH(t.transactionDateTime) = :month
                 AND t.isAggregated = true
@@ -140,7 +144,9 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
 
     /**
      * 月次カテゴリー種別ごとの金額集計を取得
-     * [0] categoryTypeName (String), [1] isIncome (Boolean), [2] totalAmount (BigDecimal)
+     * [0] categoryTypeName (String)
+     * [1] isIncome (Boolean)
+     * [2] totalAmount (BigDecimal)
      */
     @Query("""
             SELECT

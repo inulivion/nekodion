@@ -22,15 +22,17 @@ public class UserService {
      * 初回ログインユーザーをDBに保存
      * @param auth0Id Auth0のユーザーID
      * @param email email
+     * @return 新規作成した場合は作成したユーザーID、既存ユーザーの場合は null
      */
-    public void saveUserIfNotExists(String auth0Id, String email) {
-        userRepository.findByAuth0Id(auth0Id)
-                .orElseGet(() -> {
-                    var user = new User();
-                    user.setAuth0Id(auth0Id);
-                    user.setEmail(email);
-                    return userRepository.save(user);
-                });
+    public String saveUserIfNotExists(String auth0Id, String email) {
+        if (userRepository.findByAuth0Id(auth0Id).isPresent()) {
+            return null;
+        }
+
+        var user = new User();
+        user.setAuth0Id(auth0Id);
+        user.setEmail(email);
+        return userRepository.save(user).getId();
     }
 
     /**

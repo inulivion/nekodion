@@ -1,6 +1,5 @@
-export const formatAmount = (amount: number, transactionType: string) => {
+export const formatAmount = (amount: number, direction: string) => {
   const abs = Math.abs(amount).toLocaleString();
-  if (transactionType === "INCOME") return `¥${abs}`;
-  if (transactionType === "EXPENSE") return `¥-${abs}`;
+  if (direction === "OUT") return `¥-${abs}`;
   return `¥${abs}`;
 };

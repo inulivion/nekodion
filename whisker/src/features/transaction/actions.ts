@@ -35,7 +35,7 @@ export async function getMonthlyDataAction(
 }
 
 type TransactionFormValues = {
-  transactionType?: string;
+  direction?: string;
   accountId?: string;
   categoryId?: string;
   transactionName?: string;
@@ -48,7 +48,7 @@ type TransactionFormValues = {
 export type CreateTransactionActionState = {
   success?: boolean;
   errors?: {
-    transactionType?: string;
+    direction?: string;
     accountId?: string;
     categoryId?: string;
     transactionName?: string;
@@ -63,7 +63,7 @@ export async function createTransactionAction(
   _prev: CreateTransactionActionState,
   formData: FormData,
 ): Promise<CreateTransactionActionState> {
-  const transactionType = formData.get("transactionType") as string;
+  const direction = formData.get("direction") as string;
   const accountId = formData.get("accountId") as string;
   const categoryId = formData.get("categoryId") as string;
   const transactionName = (formData.get("transactionName") as string)?.trim();
@@ -73,7 +73,7 @@ export async function createTransactionAction(
   const isAggregated = formData.get("isAggregated") !== "false";
 
   const values: TransactionFormValues = {
-    transactionType,
+    direction,
     accountId,
     categoryId,
     transactionName,
@@ -84,7 +84,7 @@ export async function createTransactionAction(
   };
 
   const errors: CreateTransactionActionState["errors"] = {};
-  if (!transactionType) errors.transactionType = "取引種別を選択してください";
+  if (!direction) errors.direction = "取引種別を選択してください";
   if (!categoryId) errors.categoryId = "カテゴリーを選択してください";
   if (!transactionName) errors.transactionName = "取引名を入力してください";
   if (!amountStr || Number(amountStr) <= 0)
@@ -93,7 +93,8 @@ export async function createTransactionAction(
   if (Object.keys(errors).length > 0) return { errors, values };
 
   const result = await fetcher.post("/transactions", {
-    transactionType,
+    transactionType: "NORMAL",
+    direction,
     accountId: accountId ? Number(accountId) : null,
     categoryId: Number(categoryId),
     transactionName,
@@ -112,7 +113,7 @@ export async function createTransactionAction(
 
 export type UpdateTransactionActionState = {
   errors?: {
-    transactionType?: string;
+    direction?: string;
     accountId?: string;
     categoryId?: string;
     transactionName?: string;
@@ -128,7 +129,7 @@ export async function updateTransactionAction(
   formData: FormData,
 ): Promise<UpdateTransactionActionState> {
   const id = formData.get("id") as string;
-  const transactionType = formData.get("transactionType") as string;
+  const direction = formData.get("direction") as string;
   const accountId = formData.get("accountId") as string;
   const categoryId = formData.get("categoryId") as string;
   const transactionName = (formData.get("transactionName") as string)?.trim();
@@ -138,7 +139,7 @@ export async function updateTransactionAction(
   const isAggregated = formData.get("isAggregated") !== "false";
 
   const values: TransactionFormValues = {
-    transactionType,
+    direction,
     accountId,
     categoryId,
     transactionName,
@@ -149,7 +150,7 @@ export async function updateTransactionAction(
   };
 
   const errors: UpdateTransactionActionState["errors"] = {};
-  if (!transactionType) errors.transactionType = "取引種別を選択してください";
+  if (!direction) errors.direction = "取引種別を選択してください";
   if (!categoryId) errors.categoryId = "カテゴリーを選択してください";
   if (!transactionName) errors.transactionName = "取引名を入力してください";
   if (!amountStr || Number(amountStr) <= 0)
@@ -158,7 +159,8 @@ export async function updateTransactionAction(
   if (Object.keys(errors).length > 0) return { errors, values };
 
   const result = await fetcher.put(`/transactions/${id}`, {
-    transactionType,
+    transactionType: "NORMAL",
+    direction,
     accountId: accountId ? Number(accountId) : null,
     categoryId: Number(categoryId),
     transactionName: transactionName,

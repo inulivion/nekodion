@@ -35,12 +35,12 @@ export const TransactionTable = ({ transactions }: Props) => {
                   <span
                     className={cn(
                       "ml-3 shrink-0 text-sm font-semibold",
-                      tx.transactionType === "INCOME"
+                      tx.direction === "IN"
                         ? "text-emerald-600"
                         : "text-rose-500",
                     )}
                   >
-                    {formatAmount(tx.amount, tx.transactionType)}
+                    {formatAmount(tx.amount, tx.direction)}
                   </span>
                 </Link>
               </li>

@@ -7,6 +7,7 @@ export type TransactionItem = {
   id: number;
   amount: number;
   transactionType: string;
+  direction: string;
   transactionName: string;
   transactionDescription: string;
   categoryName: string;
@@ -39,9 +40,11 @@ export type TransactionDetailResponse = {
   accountId: number | null;
   categoryId: number;
   transactionType: string;
+  direction: string;
   transactionName: string | null;
   amount: number;
   transactionDateTime: string;
   description: string | null;
   isAggregated: boolean;
+  isDeletable: boolean;
 };

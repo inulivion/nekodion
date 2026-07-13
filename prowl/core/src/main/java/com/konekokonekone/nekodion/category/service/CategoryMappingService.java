@@ -3,8 +3,6 @@ package com.konekokonekone.nekodion.category.service;
 import com.konekokonekone.nekodion.category.entity.Category;
 import com.konekokonekone.nekodion.category.entity.CategoryMapping;
 import com.konekokonekone.nekodion.category.repository.CategoryMappingRepository;
-import com.konekokonekone.nekodion.category.repository.CategoryRepository;
-import com.konekokonekone.nekodion.support.exception.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,7 +14,7 @@ public class CategoryMappingService {
 
     private final CategoryMappingRepository categoryMappingRepository;
 
-    private final CategoryRepository categoryRepository;
+    private final CategoryService categoryService;
 
     /**
      * 取引名からカテゴリーを解決する。マッチしない場合は未分類を返す。
@@ -36,7 +34,7 @@ public class CategoryMappingService {
         return categoryMappingRepository.findMatchingGlobal(transactionName)
                 .stream().findFirst()
                 .map(CategoryMapping::getCategory)
-                .orElseGet(() -> findUnclassified(isIncome));
+                .orElseGet(() -> categoryService.findUnclassified(isIncome));
     }
 
     /**
@@ -53,10 +51,5 @@ public class CategoryMappingService {
         mapping.setKeyword(transactionName);
         mapping.setCategory(category);
         categoryMappingRepository.save(mapping);
-    }
-
-    private Category findUnclassified(boolean isIncome) {
-        return categoryRepository.findUnclassified(isIncome)
-                .orElseThrow(() -> new EntityNotFoundException("未分類カテゴリーが見つかりません"));
     }
 }

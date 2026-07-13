@@ -1,12 +1,12 @@
 package com.konekokonekone.nekodion.api.response;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -22,6 +22,8 @@ public class TransactionDetailResponse {
 
     private String transactionType;
 
+    private String direction;
+
     private String transactionName;
 
     private BigDecimal amount;
@@ -31,4 +33,6 @@ public class TransactionDetailResponse {
     private String description;
 
     private Boolean isAggregated;
+
+    private Boolean isDeletable;
 }

@@ -1,10 +1,10 @@
 package com.konekokonekone.nekodion.transaction.repository;
 
 import com.konekokonekone.nekodion.transaction.entity.Account;
+import com.konekokonekone.nekodion.transaction.enums.AccountType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,6 +19,7 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
                 a.transactions
             WHERE
                 a.userId = :userId
+                AND a.accountType <> 'UNCATEGORIZED'
             """)
     List<Account> findByUserIdWithTransactions(String userId);
 
@@ -41,6 +42,8 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
 
     Optional<Account> findByIdAndUserId(Long id, String userId);
 
+    Optional<Account> findByUserIdAndAccountType(String userId, AccountType accountType);
+
     @Query("""
             SELECT
                 a
@@ -52,18 +55,4 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
                 a.userId = :userId
             """)
     List<Account> findByUserIdWithTemplate(String userId);
-
-    /**
-     * CARDを除く初期残高の合計を取得（総資産計算用）
-     */
-    @Query("""
-            SELECT
-                COALESCE(SUM(a.initialAmount), 0)
-            FROM
-                Account a
-            WHERE
-                a.userId = :userId
-                AND a.accountType <> 'CARD'
-            """)
-    BigDecimal sumInitialAmountExcludingCard(String userId);
 }
