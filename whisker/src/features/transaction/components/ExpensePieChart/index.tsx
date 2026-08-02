@@ -12,26 +12,30 @@ import { getCategoryColor } from "@/features/category/const";
 
 type ExpenseItem = { categoryTypeName: string; totalAmount: number };
 
-type Props = { items: ExpenseItem[] };
+type Props = { items: ExpenseItem[]; hidden?: boolean };
 
 const CustomTooltip = ({
   active,
   payload,
+  hidden,
 }: {
   active?: boolean;
   payload?: { name: string; value: number }[];
+  hidden?: boolean;
 }) => {
   if (!active || !payload?.length) return null;
   const { name, value } = payload[0];
   return (
     <div className="border-border bg-card rounded-lg border px-3 py-2 text-xs shadow-sm">
       <p className="font-medium">{name}</p>
-      <p className="text-muted-foreground">¥{value.toLocaleString()}</p>
+      <p className="text-muted-foreground">
+        {hidden ? "¥ ---,---" : `¥${value.toLocaleString()}`}
+      </p>
     </div>
   );
 };
 
-export const ExpensePieChart = ({ items }: Props) => {
+export const ExpensePieChart = ({ items, hidden }: Props) => {
   if (items.length === 0) return null;
 
   const total = items.reduce((sum, item) => sum + item.totalAmount, 0);
@@ -78,14 +82,14 @@ export const ExpensePieChart = ({ items }: Props) => {
                   fontWeight="bold"
                   fill="#111"
                 >
-                  ¥{total.toLocaleString()}
+                  {hidden ? "¥ ---,---" : `¥${total.toLocaleString()}`}
                 </tspan>
               </text>
             )}
             position="center"
           />
         </Pie>
-        <Tooltip content={<CustomTooltip />} />
+        <Tooltip content={<CustomTooltip hidden={hidden} />} />
       </PieChart>
     </ResponsiveContainer>
   );
