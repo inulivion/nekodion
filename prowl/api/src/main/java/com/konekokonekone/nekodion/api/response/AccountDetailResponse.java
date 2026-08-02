@@ -21,5 +21,7 @@ public class AccountDetailResponse {
 
     private Long accountTemplateId;
 
+    private Integer closingDay;
+
     private BigDecimal totalAmount;
 }

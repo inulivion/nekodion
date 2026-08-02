@@ -41,20 +41,14 @@ export const AccountDetailPage = ({ account, templates }: Props) => {
 
         <div className="mb-6 flex items-center justify-between">
           <h1 className="text-xl font-bold tracking-tight">口座編集</h1>
-          <div className="text-right">
-            {account.accountType === "CREDIT" ? (
-              <p className="text-muted-foreground text-xs">ご利用額</p>
-            ) : (
+          {account.accountType !== "CREDIT" && (
+            <div className="text-right">
               <p className="text-muted-foreground text-xs">残高</p>
-            )}
-            <p className="text-lg font-bold">
-              {account.accountType === "CREDIT" ? (
-                <>¥{Math.abs(account.totalAmount).toLocaleString()} 円</>
-              ) : (
-                <>¥{account.totalAmount.toLocaleString()}</>
-              )}
-            </p>
-          </div>
+              <p className="text-lg font-bold">
+                ¥{account.totalAmount.toLocaleString()}
+              </p>
+            </div>
+          )}
         </div>
 
         <Card className="shadow-sm ring-0">
@@ -71,6 +65,10 @@ export const AccountDetailPage = ({ account, templates }: Props) => {
                       ? String(account.accountTemplateId)
                       : "",
                   accountName: account.accountName,
+                  closingDay:
+                    account.closingDay != null
+                      ? String(account.closingDay)
+                      : "",
                   balance: String(account.totalAmount),
                 }
               }

@@ -54,8 +54,9 @@ public class AccountService {
      * @param accountTemplateId 口座テンプレートID（任意）
      * @param accountName 口座名
      * @param balance 残高（任意、null または 0 の場合は残高調整取引を作成しない）
+     * @param closingDay 締日（任意、クレカ口座のみ使用）
      */
-    public void createAccount(String userId, String accountTypeString, Long accountTemplateId, String accountName, BigDecimal balance) {
+    public void createAccount(String userId, String accountTypeString, Long accountTemplateId, String accountName, BigDecimal balance, Integer closingDay) {
         var exists = accountRepository.existsByUserIdAndAccountName(userId, accountName);
         if (exists) {
             throw new EntityExistException(String.format("既に登録済みです。口座名[%s]", accountName));
@@ -65,6 +66,7 @@ public class AccountService {
         account.setAccountType(AccountType.codeOf(accountTypeString));
         account.setAccountName(accountName);
         account.setUserId(userId);
+        account.setClosingDay(closingDay);
 
         if (AccountType.UNCATEGORIZED.equals(account.getAccountType())) {
             throw new IllegalArgumentException("未分類口座は作成できません。");
@@ -94,8 +96,9 @@ public class AccountService {
      * @param accountTypeString 口座種別文字列
      * @param accountTemplateId 口座テンプレートID（任意）
      * @param accountName 口座名
+     * @param closingDay 締日（任意、クレカ口座のみ使用）
      */
-    public void updateAccount(Long id, String userId, String accountTypeString, Long accountTemplateId, String accountName) {
+    public void updateAccount(Long id, String userId, String accountTypeString, Long accountTemplateId, String accountName, Integer closingDay) {
         var account = accountRepository.findByIdAndUserId(id, userId)
                 .orElseThrow(() -> new EntityNotFoundException(String.format("口座が見つかりません。口座Id[%d]", id)));
 
@@ -108,6 +111,7 @@ public class AccountService {
 
         account.setAccountType(AccountType.codeOf(accountTypeString));
         account.setAccountName(accountName);
+        account.setClosingDay(closingDay);
 
         if (AccountType.UNCATEGORIZED.equals(account.getAccountType())) {
             throw new IllegalArgumentException("未分類口座は作成できません。");

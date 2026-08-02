@@ -20,5 +20,6 @@ export type AccountDetailResponse = {
   accountName: string;
   accountType: string;
   accountTemplateId: number | null;
+  closingDay: number | null;
   totalAmount: number;
 };

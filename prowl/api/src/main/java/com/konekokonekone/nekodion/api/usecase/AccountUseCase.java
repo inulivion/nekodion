@@ -98,7 +98,8 @@ public class AccountUseCase {
                 request.getAccountType(),
                 request.getAccountTemplateId(),
                 request.getAccountName(),
-                request.getBalance()
+                request.getBalance(),
+                request.getClosingDay()
         );
     }
 
@@ -115,7 +116,8 @@ public class AccountUseCase {
                 userId,
                 request.getAccountType(),
                 request.getAccountTemplateId(),
-                request.getAccountName()
+                request.getAccountName(),
+                request.getClosingDay()
         );
         if (request.getBalance() != null) {
             accountService.updateAccountBalance(id, userId, request.getBalance());

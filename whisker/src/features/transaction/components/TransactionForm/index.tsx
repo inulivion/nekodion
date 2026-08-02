@@ -44,6 +44,9 @@ type Props = {
 
 const today = new Date().toISOString().split("T")[0];
 
+const READONLY_FIELD_CLASSES =
+  "border-input bg-muted/50 text-muted-foreground w-full rounded-lg border px-3 py-2 text-sm";
+
 export const TransactionForm = ({
   formAction,
   isPending,
@@ -66,6 +69,14 @@ export const TransactionForm = ({
 
   const isIncome = selectedDirection === "IN";
   const visibleCategories = categories.filter((ct) => ct.isIncome === isIncome);
+
+  const currentAccount = accounts
+    .flatMap((group) =>
+      group.accounts.map((a) => ({ ...a, accountType: group.accountType })),
+    )
+    .find((a) => String(a.accountId) === (defaultValues?.accountId ?? ""));
+  const isCreditAccountLocked =
+    !!hiddenId && currentAccount?.accountType === "CREDIT";
 
   return (
     <form ref={formRef} action={formAction} className="space-y-5">
@@ -115,28 +126,43 @@ export const TransactionForm = ({
       </FormField>
 
       <FormField label="口座" error={errors?.accountId}>
-        <select
-          name="accountId"
-          defaultValue={defaultValues?.accountId ?? ""}
-          key={defaultValues?.accountId ?? ""}
-          className="border-input focus:ring-ring w-full rounded-lg border px-3 py-2 text-sm transition focus:border-transparent focus:ring-2 focus:outline-none"
-        >
-          <option value="">なし</option>
-          {accounts.map((group) => (
-            <optgroup
-              key={group.accountType}
-              label={
-                ACCOUNT_TYPE_LABELS[group.accountType] ?? group.accountType
-              }
-            >
-              {group.accounts.map((a) => (
-                <option key={a.accountId} value={a.accountId}>
-                  {a.accountName}
-                </option>
+        {isCreditAccountLocked ? (
+          <>
+            <div className={READONLY_FIELD_CLASSES}>
+              {currentAccount?.accountName}
+            </div>
+            <input
+              type="hidden"
+              name="accountId"
+              value={defaultValues?.accountId ?? ""}
+            />
+          </>
+        ) : (
+          <select
+            name="accountId"
+            defaultValue={defaultValues?.accountId ?? ""}
+            key={defaultValues?.accountId ?? ""}
+            className="border-input focus:ring-ring w-full rounded-lg border px-3 py-2 text-sm transition focus:border-transparent focus:ring-2 focus:outline-none"
+          >
+            <option value="">なし</option>
+            {accounts
+              .filter((group) => group.accountType !== "CREDIT")
+              .map((group) => (
+                <optgroup
+                  key={group.accountType}
+                  label={
+                    ACCOUNT_TYPE_LABELS[group.accountType] ?? group.accountType
+                  }
+                >
+                  {group.accounts.map((a) => (
+                    <option key={a.accountId} value={a.accountId}>
+                      {a.accountName}
+                    </option>
+                  ))}
+                </optgroup>
               ))}
-            </optgroup>
-          ))}
-        </select>
+          </select>
+        )}
       </FormField>
 
       <FormField label="取引名" error={errors?.transactionName}>

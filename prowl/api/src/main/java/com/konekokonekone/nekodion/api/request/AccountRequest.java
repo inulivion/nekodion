@@ -1,5 +1,7 @@
 package com.konekokonekone.nekodion.api.request;
 
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
@@ -17,4 +19,8 @@ public class AccountRequest {
     private String accountName;
 
     private BigDecimal balance;
+
+    @Min(1)
+    @Max(31)
+    private Integer closingDay;
 }

@@ -7,6 +7,7 @@ type AccountFormValues = {
   accountType?: string;
   accountTemplateId?: string;
   accountName?: string;
+  closingDay?: string;
   balance?: string;
 };
 
@@ -28,12 +29,14 @@ export async function createAccountAction(
   const accountType = formData.get("accountType") as string;
   const accountTemplateId = formData.get("accountTemplateId") as string | null;
   const accountName = (formData.get("accountName") as string)?.trim();
+  const closingDayRaw = formData.get("closingDay") as string | null;
   const balanceRaw = formData.get("balance") as string | null;
 
   const values: AccountFormValues = {
     accountType,
     accountTemplateId: accountTemplateId ?? "",
     accountName,
+    closingDay: closingDayRaw ?? "",
     balance: balanceRaw ?? "",
   };
 
@@ -46,6 +49,10 @@ export async function createAccountAction(
     accountType,
     accountTemplateId: accountTemplateId ? Number(accountTemplateId) : null,
     accountName,
+    closingDay:
+      closingDayRaw !== null && closingDayRaw !== ""
+        ? Number(closingDayRaw)
+        : null,
     balance:
       balanceRaw !== null && balanceRaw !== "" ? Number(balanceRaw) : null,
   });
@@ -67,12 +74,14 @@ export async function updateAccountAction(
   const accountType = formData.get("accountType") as string;
   const accountTemplateId = formData.get("accountTemplateId") as string | null;
   const accountName = (formData.get("accountName") as string)?.trim();
+  const closingDayRaw = formData.get("closingDay") as string | null;
   const balanceRaw = formData.get("balance") as string | null;
 
   const values: AccountFormValues = {
     accountType,
     accountTemplateId: accountTemplateId ?? "",
     accountName,
+    closingDay: closingDayRaw ?? "",
     balance: balanceRaw ?? "",
   };
 
@@ -85,6 +94,10 @@ export async function updateAccountAction(
     accountType,
     accountTemplateId: accountTemplateId ? Number(accountTemplateId) : null,
     accountName,
+    closingDay:
+      closingDayRaw !== null && closingDayRaw !== ""
+        ? Number(closingDayRaw)
+        : null,
     balance:
       balanceRaw !== null && balanceRaw !== "" ? Number(balanceRaw) : null,
   });
