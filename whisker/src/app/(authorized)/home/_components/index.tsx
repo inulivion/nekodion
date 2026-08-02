@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button";
 
 import { TransactionTable } from "@/features/transaction/components/TransactionTable";
-import { ExpensePieChart } from "@/features/transaction/components/ExpensePieChart";
 import {
   TotalAssetsResponse,
   DailyTransactionResponse,
@@ -18,6 +17,7 @@ type Props = {
   monthlySummary: MonthlySummaryResponse;
   expenseItems: { categoryTypeName: string; totalAmount: number }[];
   initialHidden: boolean;
+  unreadCount: number;
 };
 
 export const HomePage = ({
@@ -26,6 +26,7 @@ export const HomePage = ({
   monthlySummary,
   expenseItems,
   initialHidden,
+  unreadCount,
 }: Props) => {
   const limitedTransactions = transactions.slice(0, 3); // 直近日の入出金を表示
   const monthlyBalance =
@@ -36,41 +37,10 @@ export const HomePage = ({
       <TotalAssetsCard
         totalAssets={totalAssets}
         initialHidden={initialHidden}
+        monthlySummary={monthlySummary}
+        monthlyBalance={monthlyBalance}
+        expenseItems={expenseItems}
       />
-
-      <div className="rounded-lg bg-white/60 p-4 shadow-sm">
-        <p className="text-muted-foreground mb-2 text-sm font-semibold">
-          {monthlySummary.month}月の収支
-        </p>
-        <div className="flex items-center justify-between gap-4">
-          <ExpensePieChart items={expenseItems} />
-          <div className="flex-1 space-y-4">
-            <div className="flex items-center justify-between">
-              <p className="text-muted-foreground text-xs">収入</p>
-              <p className="flex-1 text-right text-2xl font-bold text-blue-600">
-                ¥{monthlySummary.totalIncome.toLocaleString()}
-              </p>
-            </div>
-            <div className="flex items-center justify-between">
-              <p className="text-muted-foreground text-xs">支出</p>
-              <p className="flex-1 text-right text-2xl font-bold text-red-500">
-                ¥{monthlySummary.totalExpense.toLocaleString()}
-              </p>
-            </div>
-            <div className="flex items-center justify-between">
-              <p className="text-muted-foreground text-xs">収支</p>
-              <p
-                className={`flex-1 text-right text-2xl font-bold ${
-                  monthlyBalance >= 0 ? "text-blue-600" : "text-red-500"
-                }`}
-              >
-                {monthlyBalance >= 0 ? "+" : ""}¥
-                {monthlyBalance.toLocaleString()}
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
 
       <div className="rounded-lg bg-white/60 p-4 shadow-sm">
         <div className="pb-3">
@@ -89,6 +59,14 @@ export const HomePage = ({
             </Button>
           </div>
         </div>
+        {unreadCount > 0 && (
+          <Link href="/transactions/unread">
+            <div className="bg-primary/10 border-primary/20 text-primary mb-4 flex cursor-pointer items-center gap-2 rounded-lg border px-4 py-2.5 text-sm font-medium transition hover:opacity-80">
+              <span className="bg-primary flex h-2 w-2 rounded-full" />
+              新着 {unreadCount}件
+            </div>
+          </Link>
+        )}
         <div>
           {limitedTransactions.length > 0 ? (
             <>

@@ -4,7 +4,11 @@ import {
   getMonthlySummary,
   getMonthlyCategorySummary,
 } from "@/features/transaction/api";
-import { MonthlyCategoryTypeSummaryItem } from "@/features/transaction/types";
+import { getUnreadCount } from "@/features/transaction/api";
+import {
+  MonthlyCategoryTypeSummaryItem,
+  UnreadCountResponse,
+} from "@/features/transaction/types";
 import { HomePage } from "./_components";
 import { cookies } from "next/headers";
 
@@ -18,18 +22,21 @@ export default async function Home() {
     totalAssetsResponse,
     monthlySummaryResponse,
     categorySummaryResponse,
+    unreadCountResponse,
   ] = await Promise.all([
     getTransactions(),
     getTotalAssets(),
     getMonthlySummary(year, month),
     getMonthlyCategorySummary(year, month),
+    getUnreadCount(),
   ]);
 
   if (
     "error" in transactionResponse ||
     "error" in totalAssetsResponse ||
     "error" in monthlySummaryResponse ||
-    "error" in categorySummaryResponse
+    "error" in categorySummaryResponse ||
+    "error" in unreadCountResponse
   ) {
     throw new Error("データの取得に失敗しました");
   }
@@ -41,6 +48,11 @@ export default async function Home() {
   const cookieStore = await cookies();
   const initialHidden = cookieStore.get("totalAssetsHidden")?.value === "true";
 
+  const unreadCount =
+    "error" in unreadCountResponse
+      ? 0
+      : (unreadCountResponse.body as UnreadCountResponse).count;
+
   return (
     <HomePage
       transactions={transactionResponse.body}
@@ -48,6 +60,7 @@ export default async function Home() {
       monthlySummary={monthlySummaryResponse.body}
       expenseItems={expenseItems}
       initialHidden={initialHidden}
+      unreadCount={unreadCount}
     />
   );
 }
