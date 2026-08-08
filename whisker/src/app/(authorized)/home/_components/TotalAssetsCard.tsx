@@ -64,6 +64,7 @@ export const TotalAssetsCard = ({
           alt="総資産"
           width={100}
           height={100}
+          priority
         />
       </div>
 
