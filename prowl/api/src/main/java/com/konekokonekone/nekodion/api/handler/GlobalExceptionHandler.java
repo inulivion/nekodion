@@ -4,7 +4,6 @@ import com.konekokonekone.nekodion.api.response.ErrorResponse;
 import com.konekokonekone.nekodion.support.exception.EntityExistException;
 import com.konekokonekone.nekodion.support.exception.EntityNotFoundException;
 import com.konekokonekone.nekodion.support.exception.ExternalApiException;
-import com.konekokonekone.nekodion.support.exception.GmailNotAuthorizedException;
 import com.konekokonekone.nekodion.support.exception.InvalidOAuthStateException;
 import com.konekokonekone.nekodion.support.exception.OAuthStateExpiredException;
 import org.springframework.http.HttpStatus;
@@ -34,12 +33,6 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleInvalidOAuthState(RuntimeException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new ErrorResponse(400, "Bad Request", ex.getMessage()));
-    }
-
-    @ExceptionHandler(GmailNotAuthorizedException.class)
-    public ResponseEntity<ErrorResponse> handleGmailNotAuthorized(GmailNotAuthorizedException ex) {
-        return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                .body(new ErrorResponse(403, "Forbidden", ex.getMessage()));
     }
 
     @ExceptionHandler(ExternalApiException.class)
