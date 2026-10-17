@@ -8,6 +8,6 @@ type Props = {
 };
 
 export const TransactionCategoryIcon = ({ categoryTypeName }: Props) => {
-  const { Icon, bgColor } = getCategoryIconConfig(categoryTypeName);
-  return <CategoryIcon Icon={Icon} bgColor={bgColor} />;
+  const { Icon, color } = getCategoryIconConfig(categoryTypeName);
+  return <CategoryIcon Icon={Icon} color={color} />;
 };
