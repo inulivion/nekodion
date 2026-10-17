@@ -35,7 +35,6 @@
 ```
 nekodion
 ├─ fluffy       # DB
-├─ knead        # iOS
 ├─ pounce       # スクリプト
 ├─ prowl        # バックエンド
 ├─ scratch      # docs
