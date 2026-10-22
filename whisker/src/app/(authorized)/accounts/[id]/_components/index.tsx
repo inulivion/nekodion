@@ -51,7 +51,7 @@ export const AccountDetailPage = ({ account, templates }: Props) => {
           )}
         </div>
 
-        <Card className="shadow-sm ring-0">
+        <Card className="shadow-[0_4px_20px_rgba(0,0,0,0.05)] ring-0">
           <CardContent>
             <AccountForm
               formAction={formAction}

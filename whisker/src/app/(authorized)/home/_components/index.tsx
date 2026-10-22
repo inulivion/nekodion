@@ -42,13 +42,17 @@ export const HomePage = ({
         expenseItems={expenseItems}
       />
 
-      <div className="rounded-lg bg-white/60 p-4 shadow-sm">
+      <div className="rounded-lg bg-white p-4 shadow-[0_4px_20px_rgba(0,0,0,0.04)]">
         <div className="pb-3">
           <div className="flex items-center justify-between">
             <div className="text-muted-foreground text-sm font-semibold">
               最近の入出金
             </div>
-            <Button asChild variant="ghost" size="xs" className="text-primary">
+            <Button
+              asChild
+              variant="ghost"
+              className="bg-[linear-gradient(135deg,#21C5FD_0%,#2979FF_100%)] text-white"
+            >
               <Link
                 href="/transactions/new"
                 className="flex items-center gap-1"
@@ -61,8 +65,7 @@ export const HomePage = ({
         </div>
         {unreadCount > 0 && (
           <Link href="/transactions/unread">
-            <div className="bg-primary/10 border-primary/20 text-primary mb-4 flex cursor-pointer items-center gap-2 rounded-lg border px-4 py-2.5 text-sm font-medium transition hover:opacity-80">
-              <span className="bg-primary flex h-2 w-2 rounded-full" />
+            <div className="mb-4 flex cursor-pointer items-center gap-2 rounded-lg bg-[linear-gradient(90deg,#B7BBC7_3%,#CACCDa_37%,#ABAEB5_100%)] px-4 py-2.5 text-sm font-medium text-white transition hover:opacity-80">
               新着 {unreadCount}件
             </div>
           </Link>

@@ -1,5 +1,6 @@
 "use client";
 
+import { Card, CardContent } from "@/components/ui/card";
 import { useTransition } from "react";
 import { Button } from "@/components/ui/button";
 import { TransactionTable } from "@/features/transaction/components/TransactionTable";
@@ -15,9 +16,7 @@ type Props = {
 export const UnreadTransactionPage = ({ transactions }: Props) => {
   const [isPending, startTransition] = useTransition();
 
-  const ids = transactions.flatMap((d) =>
-    d.dailyTransactions.map((t) => t.id),
-  );
+  const ids = transactions.flatMap((d) => d.dailyTransactions.map((t) => t.id));
 
   const handleMarkAllAsRead = () => {
     startTransition(async () => {
@@ -52,7 +51,11 @@ export const UnreadTransactionPage = ({ transactions }: Props) => {
         </Button>
       </div>
 
-      <TransactionTable transactions={transactions} />
+      <Card className="shadow-[0_4px_20px_rgba(0,0,0,0.04)] ring-0">
+        <CardContent>
+          <TransactionTable transactions={transactions} />
+        </CardContent>
+      </Card>
     </div>
   );
 };

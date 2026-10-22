@@ -43,7 +43,7 @@ export const CreateTransactionPage = ({ accounts, categories }: Props) => {
         </Alert>
       )}
 
-      <Card className="shadow-sm ring-0">
+      <Card className="shadow-[0_4px_20px_rgba(0,0,0,0.04)] ring-0">
         <CardContent>
           <TransactionForm
             formRef={formRef}

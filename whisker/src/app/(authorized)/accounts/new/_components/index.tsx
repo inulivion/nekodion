@@ -25,7 +25,7 @@ export const CreateAccountPage = ({ templates }: Props) => {
     <div className="mx-auto max-w-lg">
       <h1 className="mb-6 text-xl font-bold tracking-tight">口座追加</h1>
 
-      <Card className="shadow-sm ring-0">
+      <Card className="shadow-[0_4px_20px_rgba(0,0,0,0.05)] ring-0">
         <CardContent>
           <AccountForm
             formAction={formAction}

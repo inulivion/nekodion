@@ -36,7 +36,7 @@ export const TotalAssetsCard = ({
 
   return (
     <>
-      <div className="flex items-center justify-between rounded-lg bg-white/60 p-4 shadow-sm">
+      <div className="flex items-center justify-between rounded-lg bg-white p-4 shadow-[0_4px_20px_rgba(0,0,0,0.04)]">
         <div className="flex flex-col gap-2">
           <p className="text-lg font-bold">総資産</p>
           <div className="flex items-center">
@@ -68,7 +68,7 @@ export const TotalAssetsCard = ({
         />
       </div>
 
-      <div className="rounded-lg bg-white/60 p-4 shadow-sm">
+      <div className="rounded-lg bg-white p-4 shadow-[0_4px_20px_rgba(0,0,0,0.04)]">
         <p className="text-muted-foreground mb-2 text-sm font-semibold">
           {monthlySummary.month}月の収支
         </p>

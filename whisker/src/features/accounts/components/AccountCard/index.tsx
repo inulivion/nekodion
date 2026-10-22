@@ -43,7 +43,7 @@ export const AccountCard = ({ accountGroup }: Props) => {
   return (
     <Card
       key={accountGroup.accountType}
-      className="overflow-hidden shadow-sm ring-0"
+      className="overflow-hidden shadow-[0_4px_20px_rgba(0,0,0,0.05)] ring-0"
     >
       <CardHeader className="pt-4 pb-2">
         <div className="flex items-center gap-2">

@@ -44,7 +44,7 @@ export const TransactionDetailPage = ({
 
       <h1 className="mb-6 text-xl font-bold tracking-tight">入出金編集</h1>
 
-      <Card className="shadow-sm ring-0">
+      <Card className="shadow-[0_4px_20px_rgba(0,0,0,0.04)] ring-0">
         <CardContent>
           <TransactionForm
             formAction={formAction}
