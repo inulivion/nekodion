@@ -8,8 +8,9 @@ import {
 } from "@/features/transaction/types";
 import { TotalAssetsCard } from "./TotalAssetsCard";
 
-import { ArrowRight, LogOut, PlusCircle } from "lucide-react";
+import { ArrowRight, LogOut } from "lucide-react";
 import Link from "next/link";
+import { AddTransactionButton } from "@/features/transaction/components/AddTransactionButton";
 
 type Props = {
   transactions: DailyTransactionResponse[];
@@ -48,19 +49,6 @@ export const HomePage = ({
             <div className="text-muted-foreground text-sm font-semibold">
               最近の入出金
             </div>
-            <Button
-              asChild
-              variant="ghost"
-              className="bg-[linear-gradient(135deg,#21C5FD_0%,#2979FF_100%)] text-white"
-            >
-              <Link
-                href="/transactions/new"
-                className="flex items-center gap-1"
-              >
-                <PlusCircle className="h-3.5 w-3.5" />
-                記録する
-              </Link>
-            </Button>
           </div>
         </div>
         {unreadCount > 0 && (
@@ -98,6 +86,8 @@ export const HomePage = ({
           )}
         </div>
       </div>
+
+      <AddTransactionButton />
 
       <div className="pt-2 pb-4 md:hidden">
         <Button
