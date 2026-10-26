@@ -2,12 +2,19 @@ type Props = {
   label: string;
   optional?: boolean;
   error?: string;
+  className?: string;
   children: React.ReactNode;
 };
 
-export const FormField = ({ label, optional, error, children }: Props) => {
+export const FormField = ({
+  label,
+  optional,
+  error,
+  className,
+  children,
+}: Props) => {
   return (
-    <div className="space-y-1.5">
+    <div className={`space-y-1.5 ${className ?? ""}`}>
       <label className="text-foreground block text-sm font-medium">
         {label}
         {optional && (

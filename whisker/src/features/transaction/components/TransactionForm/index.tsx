@@ -79,7 +79,7 @@ export const TransactionForm = ({
     !!hiddenId && currentAccount?.accountType === "CREDIT";
 
   return (
-    <form ref={formRef} action={formAction} className="space-y-5">
+    <form ref={formRef} action={formAction} className="space-y-4">
       {hiddenId && <input type="hidden" name="id" value={hiddenId} />}
       {errors?.global && (
         <div className="bg-destructive/10 border-destructive/20 text-destructive rounded-lg border px-4 py-3 text-sm">
@@ -101,69 +101,86 @@ export const TransactionForm = ({
         </select>
       </FormField>
 
-      <FormField label="カテゴリー" error={errors?.categoryId}>
-        <select
-          name="categoryId"
-          defaultValue={defaultValues?.categoryId ?? ""}
-          key={`${selectedDirection}-${defaultValues?.categoryId ?? ""}`}
-          className="border-input focus:ring-ring w-full rounded-lg border px-3 py-2 text-sm transition focus:border-transparent focus:ring-2 focus:outline-none"
-        >
-          <option value="">
-            {selectedDirection
-              ? "選択してください"
-              : "取引種別を先に選択してください"}
-          </option>
-          {visibleCategories.map((ct) => (
-            <optgroup key={ct.categoryTypeId} label={ct.categoryTypeName}>
-              {ct.categories.map((c) => (
-                <option key={c.categoryId} value={c.categoryId}>
-                  {c.categoryName}
-                </option>
-              ))}
-            </optgroup>
-          ))}
-        </select>
+      <FormField label="金額" error={errors?.amount}>
+        <Input
+          type="number"
+          name="amount"
+          placeholder="0"
+          min={1}
+          defaultValue={defaultValues?.amount ?? ""}
+        />
       </FormField>
 
-      <FormField label="口座" error={errors?.accountId}>
-        {isCreditAccountLocked ? (
-          <>
-            <div className={READONLY_FIELD_CLASSES}>
-              {currentAccount?.accountName}
-            </div>
-            <input
-              type="hidden"
-              name="accountId"
-              value={defaultValues?.accountId ?? ""}
-            />
-          </>
-        ) : (
+      <div className="flex gap-4">
+        <FormField
+          label="カテゴリー"
+          className="w-full"
+          error={errors?.categoryId}
+        >
           <select
-            name="accountId"
-            defaultValue={defaultValues?.accountId ?? ""}
-            key={defaultValues?.accountId ?? ""}
+            name="categoryId"
+            defaultValue={defaultValues?.categoryId ?? ""}
+            key={`${selectedDirection}-${defaultValues?.categoryId ?? ""}`}
             className="border-input focus:ring-ring w-full rounded-lg border px-3 py-2 text-sm transition focus:border-transparent focus:ring-2 focus:outline-none"
           >
-            <option value="">なし</option>
-            {accounts
-              .filter((group) => group.accountType !== "CREDIT")
-              .map((group) => (
-                <optgroup
-                  key={group.accountType}
-                  label={
-                    ACCOUNT_TYPE_LABELS[group.accountType] ?? group.accountType
-                  }
-                >
-                  {group.accounts.map((a) => (
-                    <option key={a.accountId} value={a.accountId}>
-                      {a.accountName}
-                    </option>
-                  ))}
-                </optgroup>
-              ))}
+            <option value="">
+              {selectedDirection
+                ? "選択してください"
+                : "取引種別を先に選択してください"}
+            </option>
+            {visibleCategories.map((ct) => (
+              <optgroup key={ct.categoryTypeId} label={ct.categoryTypeName}>
+                {ct.categories.map((c) => (
+                  <option key={c.categoryId} value={c.categoryId}>
+                    {c.categoryName}
+                  </option>
+                ))}
+              </optgroup>
+            ))}
           </select>
-        )}
-      </FormField>
+        </FormField>
+
+        <FormField label="口座" className="w-full" error={errors?.accountId}>
+          {isCreditAccountLocked ? (
+            <>
+              <div className={READONLY_FIELD_CLASSES}>
+                {currentAccount?.accountName}
+              </div>
+              <input
+                type="hidden"
+                name="accountId"
+                value={defaultValues?.accountId ?? ""}
+              />
+            </>
+          ) : (
+            <select
+              name="accountId"
+              defaultValue={defaultValues?.accountId ?? ""}
+              key={defaultValues?.accountId ?? ""}
+              className="border-input focus:ring-ring w-full rounded-lg border px-3 py-2 text-sm transition focus:border-transparent focus:ring-2 focus:outline-none"
+            >
+              <option value="">なし</option>
+              {accounts
+                .filter((group) => group.accountType !== "CREDIT")
+                .map((group) => (
+                  <optgroup
+                    key={group.accountType}
+                    label={
+                      ACCOUNT_TYPE_LABELS[group.accountType] ??
+                      group.accountType
+                    }
+                  >
+                    {group.accounts.map((a) => (
+                      <option key={a.accountId} value={a.accountId}>
+                        {a.accountName}
+                      </option>
+                    ))}
+                  </optgroup>
+                ))}
+            </select>
+          )}
+        </FormField>
+      </div>
 
       <FormField label="取引名" error={errors?.transactionName}>
         <Input
@@ -175,23 +192,38 @@ export const TransactionForm = ({
         />
       </FormField>
 
-      <FormField label="金額" error={errors?.amount}>
-        <Input
-          type="number"
-          name="amount"
-          placeholder="0"
-          min={1}
-          defaultValue={defaultValues?.amount ?? ""}
-        />
-      </FormField>
-
-      <FormField label="取引日" error={errors?.transactionDate}>
-        <Input
-          type="date"
-          name="transactionDate"
-          defaultValue={defaultValues?.transactionDate ?? today}
-        />
-      </FormField>
+      <div className="flex items-center gap-4">
+        <FormField
+          label="取引日"
+          className="w-full"
+          error={errors?.transactionDate}
+        >
+          <Input
+            type="date"
+            name="transactionDate"
+            defaultValue={defaultValues?.transactionDate ?? today}
+          />
+        </FormField>
+        <div className="w-full pt-5">
+          <div className="flex items-center justify-between">
+            <span className="text-sm font-medium">計算対象</span>
+            <div className="flex items-center gap-2">
+              <Switch
+                checked={isAggregated}
+                onCheckedChange={setIsAggregated}
+              />
+              <span className="text-muted-foreground text-sm">
+                {isAggregated ? "ON" : "OFF"}
+              </span>
+            </div>
+          </div>
+          <input
+            type="hidden"
+            name="isAggregated"
+            value={isAggregated ? "true" : "false"}
+          />
+        </div>
+      </div>
 
       <FormField label="メモ" optional>
         <Input
@@ -203,23 +235,8 @@ export const TransactionForm = ({
         />
       </FormField>
 
-      <div className="flex items-center justify-between">
-        <span className="text-sm font-medium">計算対象</span>
-        <div className="flex items-center gap-2">
-          <Switch checked={isAggregated} onCheckedChange={setIsAggregated} />
-          <span className="text-muted-foreground text-sm">
-            {isAggregated ? "ON" : "OFF"}
-          </span>
-        </div>
-      </div>
-      <input
-        type="hidden"
-        name="isAggregated"
-        value={isAggregated ? "true" : "false"}
-      />
-
       <div className="flex flex-col gap-3 pt-1">
-        <Button type="submit" disabled={isPending} className="w-full">
+        <Button type="submit" disabled={isPending} className="w-full py-5">
           {isPending ? pendingLabel : submitLabel}
         </Button>
         {extraActions}

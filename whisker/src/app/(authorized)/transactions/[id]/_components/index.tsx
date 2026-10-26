@@ -35,13 +35,6 @@ export const TransactionDetailPage = ({
 
   return (
     <div className="mx-auto max-w-lg">
-      <Breadcrumb
-        items={[
-          { href: "/transactions", label: "入出金一覧" },
-          { label: transaction.transactionName ?? "入出金詳細" },
-        ]}
-      />
-
       <h1 className="mb-6 text-xl font-bold tracking-tight">入出金編集</h1>
 
       <Card className="shadow-[0_4px_20px_rgba(0,0,0,0.04)] ring-0">
